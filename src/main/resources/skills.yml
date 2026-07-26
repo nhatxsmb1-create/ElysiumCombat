@@ -1,121 +1,139 @@
-# Dinh nghia skill cua tung class
-# Kich hoat: F (Skill 1) | /combat skill 2 | /combat skill 3
-# effect types: DAMAGE_AOE, DAMAGE_SINGLE, KNOCKBACK,
-#               BUFF_SELF, DEBUFF_AOE, PROJECTILE,
-#               DASH, FIRE_ARROW, ARROW_RAIN
+# Tat ca skill la BUFF ban than
+# effect: BUFF_POTION | RESTORE_MANA | HEAL | DASH
+# Skill item CustomModelData: 2001, 2002, 2003
+# Potion types: SPEED, STRENGTH, RESISTANCE, REGENERATION,
+#   FIRE_RESISTANCE, HASTE, INVISIBILITY, NIGHT_VISION, ABSORPTION
 
 skills:
   WARRIOR:
     skill1:
-      name: "Chém Xoáy"
-      description: "Gay sat thuong cho tat ca ke thu xung quanh 4 block"
-      mana-cost: 25
-      cooldown: 8
-      effect: DAMAGE_AOE
-      radius: 4.0
-      damage: 8.0
-
+      name: "Thiet Giap"
+      description: "Tang khang sat thuong trong 8 giay"
+      icon: "&c"
+      mana-cost: 20
+      cooldown: 15
+      effect: BUFF_POTION
+      potion-type: RESISTANCE
+      potion-amplifier: 1
+      duration: 160
     skill2:
-      name: "Đập Khiên"
-      description: "Day lui ke thu gan nhat, lam cham 3 giay"
-      mana-cost: 35
-      cooldown: 12
-      effect: KNOCKBACK
-      knockback: 3.0
-      slow-duration: 60
-      slow-amplifier: 1
-
-    skill3:
-      name: "Cuồng Chiến"
-      description: "Tang suc manh trong 10 giay"
-      mana-cost: 80
-      cooldown: 60
-      effect: BUFF_SELF
+      name: "Hung Khi"
+      description: "Tang suc manh danh trong 8 giay"
+      icon: "&c"
+      mana-cost: 30
+      cooldown: 20
+      effect: BUFF_POTION
       potion-type: STRENGTH
       potion-amplifier: 1
-      duration: 200
+      duration: 160
+    skill3:
+      name: "Tai Sinh"
+      description: "Hoi phuc 8 HP va Regeneration 5 giay"
+      icon: "&c"
+      mana-cost: 50
+      cooldown: 60
+      effect: HEAL
+      heal-amount: 8.0
+      regen-duration: 100
+      regen-amplifier: 1
 
   MAGE:
     skill1:
-      name: "Cầu Lửa"
-      description: "Phong mot cau lua sat thuong manh"
-      mana-cost: 30
-      cooldown: 5
-      effect: PROJECTILE
-      damage: 12.0
-
+      name: "Bao Mana"
+      description: "Hoi phuc 60 Mana ngay lap tuc"
+      icon: "&9"
+      mana-cost: 0
+      cooldown: 20
+      effect: RESTORE_MANA
+      mana-restore: 60
     skill2:
-      name: "Băng Kết"
-      description: "Lam cham tat ca ke thu xung quanh 5 block"
-      mana-cost: 45
-      cooldown: 15
-      effect: DEBUFF_AOE
-      radius: 5.0
-      potion-type: SLOWNESS
-      potion-amplifier: 2
-      duration: 80
-
+      name: "Man Phep"
+      description: "Khang lua va sat thuong trong 12 giay"
+      icon: "&9"
+      mana-cost: 35
+      cooldown: 25
+      effect: BUFF_POTION
+      potion-type: FIRE_RESISTANCE
+      potion-amplifier: 0
+      duration: 240
+      extra-potion-type: RESISTANCE
+      extra-potion-amplifier: 0
+      extra-duration: 240
     skill3:
-      name: "Nổ Ma Lực"
-      description: "Gay sat thuong lon cho tat ca ke thu xung quanh"
-      mana-cost: 100
-      cooldown: 90
-      effect: DAMAGE_AOE
-      radius: 6.0
-      damage: 18.0
+      name: "Khuech Dai"
+      description: "Tang toc do danh va di chuyen 10 giay"
+      icon: "&9"
+      mana-cost: 60
+      cooldown: 60
+      effect: BUFF_POTION
+      potion-type: HASTE
+      potion-amplifier: 1
+      duration: 200
+      extra-potion-type: SPEED
+      extra-potion-amplifier: 1
+      extra-duration: 200
 
   ARCHER:
     skill1:
-      name: "Tên Lửa"
-      description: "Ban ten gay them sat thuong va lua"
+      name: "Buoc Gio"
+      description: "Tang toc do di chuyen manh 6 giay"
+      icon: "&a"
       mana-cost: 20
-      cooldown: 6
-      effect: FIRE_ARROW
-      damage: 10.0
-
-    skill2:
-      name: "Bước Nhanh"
-      description: "Tang toc do di chuyen 5 giay"
-      mana-cost: 25
-      cooldown: 10
-      effect: BUFF_SELF
+      cooldown: 12
+      effect: BUFF_POTION
       potion-type: SPEED
       potion-amplifier: 2
-      duration: 100
-
+      duration: 120
+    skill2:
+      name: "Mat Dai Bang"
+      description: "Tang tam nhin ban dem 15 giay"
+      icon: "&a"
+      mana-cost: 25
+      cooldown: 20
+      effect: BUFF_POTION
+      potion-type: NIGHT_VISION
+      potion-amplifier: 0
+      duration: 300
     skill3:
-      name: "Mưa Tên"
-      description: "Phong nhieu ten tan cong tat ca ke thu gan"
-      mana-cost: 70
+      name: "Phan Xa"
+      description: "Tang khang sat thuong manh 8 giay"
+      icon: "&a"
+      mana-cost: 50
       cooldown: 60
-      effect: ARROW_RAIN
-      radius: 6.0
-      arrow-count: 8
-      damage: 5.0
+      effect: BUFF_POTION
+      potion-type: RESISTANCE
+      potion-amplifier: 2
+      duration: 160
 
   ROGUE:
     skill1:
-      name: "Phóng Thân"
-      description: "Lang xe nhanh ve phia truoc 6 block"
-      mana-cost: 20
-      cooldown: 6
-      effect: DASH
-      dash-distance: 6.0
-
-    skill2:
-      name: "Tàng Hình"
-      description: "An hien trong 4 giay"
-      mana-cost: 40
+      name: "Tang Hinh"
+      description: "An hien trong 5 giay"
+      icon: "&e"
+      mana-cost: 30
       cooldown: 20
-      effect: BUFF_SELF
+      effect: BUFF_POTION
       potion-type: INVISIBILITY
       potion-amplifier: 0
-      duration: 80
-
+      duration: 100
+    skill2:
+      name: "Bong Toi"
+      description: "Tang suc manh va toc do 6 giay"
+      icon: "&e"
+      mana-cost: 40
+      cooldown: 25
+      effect: BUFF_POTION
+      potion-type: STRENGTH
+      potion-amplifier: 1
+      duration: 120
+      extra-potion-type: SPEED
+      extra-potion-amplifier: 1
+      extra-duration: 120
     skill3:
-      name: "Đòn Sát Thủ"
-      description: "Gay sat thuong cuc cao cho ke thu gan nhat"
-      mana-cost: 60
-      cooldown: 30
-      effect: DAMAGE_SINGLE
-      damage: 20.0
+      name: "Phong Than"
+      description: "Lang xe nhanh ve phia truoc 8 block"
+      icon: "&e"
+      mana-cost: 25
+      cooldown: 10
+      effect: DASH
+      dash-distance: 8.0
