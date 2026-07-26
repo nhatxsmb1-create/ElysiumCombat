@@ -1,0 +1,20 @@
+# ElysiumCombat Config
+prefix: "&c[Combat] &r"
+
+mana:
+  # Hien thi mana tren action bar moi bao nhieu tick?
+  display-interval: 20
+  # Regen mana moi bao nhieu tick?
+  regen-interval: 40  # 2 giay
+
+combat:
+  # He so sat thuong (x damage khi danh)
+  damage-multiplier: 1.0
+  # Hien thi sat thuong bay len dau?
+  show-damage-indicator: true
+
+class-change:
+  # Cho phep doi class?
+  enabled: true
+  # Chi phi doi class (0 = mien phi)
+  cost: 0
