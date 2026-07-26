@@ -1,20 +1,18 @@
 # ElysiumCombat Config
 prefix: "&c[Combat] &r"
 
+skill-item:
+  # Material cua skill item tren hotbar
+  # Resource pack se doi texture theo CustomModelData
+  material: NETHER_STAR
+  # Hotbar slot (0-8). Mac dinh: slot 7, 8, 9 (index 6, 7, 8)
+  slot-1: 6
+  slot-2: 7
+  slot-3: 8
+
 mana:
-  # Hien thi mana tren action bar moi bao nhieu tick?
   display-interval: 20
-  # Regen mana moi bao nhieu tick?
-  regen-interval: 40  # 2 giay
+  regen-interval: 40
 
-combat:
-  # He so sat thuong (x damage khi danh)
-  damage-multiplier: 1.0
-  # Hien thi sat thuong bay len dau?
-  show-damage-indicator: true
-
-class-change:
-  # Cho phep doi class?
-  enabled: true
-  # Chi phi doi class (0 = mien phi)
-  cost: 0
+# Cap nhat cooldown lore moi bao nhieu tick
+cooldown-update-interval: 20
