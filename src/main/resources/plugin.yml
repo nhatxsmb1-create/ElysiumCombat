@@ -1,0 +1,23 @@
+name: ElysiumCombat
+version: 1.0.0
+main: dev.elysium.combat.ElysiumCombat
+api-version: '1.21'
+authors:
+  - Elysium
+description: Combat system for Elysium Fantasy Server
+
+depend:
+  - ElysiumCore
+
+commands:
+  combat:
+    description: ElysiumCombat command
+    aliases: [class, cb]
+    usage: /combat <class|info|skill>
+    permission: elysium.combat.use
+
+permissions:
+  elysium.combat.use:
+    default: true
+  elysium.combat.admin:
+    default: op
