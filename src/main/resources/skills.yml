@@ -1,0 +1,121 @@
+# Dinh nghia skill cua tung class
+# Kich hoat: F (Skill 1) | /combat skill 2 | /combat skill 3
+# effect types: DAMAGE_AOE, DAMAGE_SINGLE, KNOCKBACK,
+#               BUFF_SELF, DEBUFF_AOE, PROJECTILE,
+#               DASH, FIRE_ARROW, ARROW_RAIN
+
+skills:
+  WARRIOR:
+    skill1:
+      name: "Chém Xoáy"
+      description: "Gay sat thuong cho tat ca ke thu xung quanh 4 block"
+      mana-cost: 25
+      cooldown: 8
+      effect: DAMAGE_AOE
+      radius: 4.0
+      damage: 8.0
+
+    skill2:
+      name: "Đập Khiên"
+      description: "Day lui ke thu gan nhat, lam cham 3 giay"
+      mana-cost: 35
+      cooldown: 12
+      effect: KNOCKBACK
+      knockback: 3.0
+      slow-duration: 60
+      slow-amplifier: 1
+
+    skill3:
+      name: "Cuồng Chiến"
+      description: "Tang suc manh trong 10 giay"
+      mana-cost: 80
+      cooldown: 60
+      effect: BUFF_SELF
+      potion-type: STRENGTH
+      potion-amplifier: 1
+      duration: 200
+
+  MAGE:
+    skill1:
+      name: "Cầu Lửa"
+      description: "Phong mot cau lua sat thuong manh"
+      mana-cost: 30
+      cooldown: 5
+      effect: PROJECTILE
+      damage: 12.0
+
+    skill2:
+      name: "Băng Kết"
+      description: "Lam cham tat ca ke thu xung quanh 5 block"
+      mana-cost: 45
+      cooldown: 15
+      effect: DEBUFF_AOE
+      radius: 5.0
+      potion-type: SLOWNESS
+      potion-amplifier: 2
+      duration: 80
+
+    skill3:
+      name: "Nổ Ma Lực"
+      description: "Gay sat thuong lon cho tat ca ke thu xung quanh"
+      mana-cost: 100
+      cooldown: 90
+      effect: DAMAGE_AOE
+      radius: 6.0
+      damage: 18.0
+
+  ARCHER:
+    skill1:
+      name: "Tên Lửa"
+      description: "Ban ten gay them sat thuong va lua"
+      mana-cost: 20
+      cooldown: 6
+      effect: FIRE_ARROW
+      damage: 10.0
+
+    skill2:
+      name: "Bước Nhanh"
+      description: "Tang toc do di chuyen 5 giay"
+      mana-cost: 25
+      cooldown: 10
+      effect: BUFF_SELF
+      potion-type: SPEED
+      potion-amplifier: 2
+      duration: 100
+
+    skill3:
+      name: "Mưa Tên"
+      description: "Phong nhieu ten tan cong tat ca ke thu gan"
+      mana-cost: 70
+      cooldown: 60
+      effect: ARROW_RAIN
+      radius: 6.0
+      arrow-count: 8
+      damage: 5.0
+
+  ROGUE:
+    skill1:
+      name: "Phóng Thân"
+      description: "Lang xe nhanh ve phia truoc 6 block"
+      mana-cost: 20
+      cooldown: 6
+      effect: DASH
+      dash-distance: 6.0
+
+    skill2:
+      name: "Tàng Hình"
+      description: "An hien trong 4 giay"
+      mana-cost: 40
+      cooldown: 20
+      effect: BUFF_SELF
+      potion-type: INVISIBILITY
+      potion-amplifier: 0
+      duration: 80
+
+    skill3:
+      name: "Đòn Sát Thủ"
+      description: "Gay sat thuong cuc cao cho ke thu gan nhat"
+      mana-cost: 60
+      cooldown: 30
+      effect: DAMAGE_SINGLE
+      damage: 20.0
