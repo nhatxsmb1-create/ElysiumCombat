@@ -41,10 +41,10 @@ public class StatsManager {
         ClassData cd = plugin.getClassManager().getClassData(pc);
 
         // Xoa modifier cu truoc
-        removeModifier(player, Attribute.GENERIC_MAX_HEALTH, KEY_HP);
-        removeModifier(player, Attribute.GENERIC_ATTACK_DAMAGE, KEY_DAMAGE);
-        removeModifier(player, Attribute.GENERIC_MOVEMENT_SPEED, KEY_SPEED);
-        removeModifier(player, Attribute.GENERIC_ARMOR, KEY_ARMOR);
+        removeModifier(player, Attribute.MAX_HEALTH, KEY_HP);
+        removeModifier(player, Attribute.ATTACK_DAMAGE, KEY_DAMAGE);
+        removeModifier(player, Attribute.MOVEMENT_SPEED, KEY_SPEED);
+        removeModifier(player, Attribute.ARMOR, KEY_ARMOR);
 
         if (cd == null || pc == PlayerClass.NONE) {
             statsCache.put(player.getUniqueId(), new CombatStats(0, 2, 0));
@@ -52,9 +52,9 @@ public class StatsManager {
         }
 
         // Ap dung modifier moi
-        addModifier(player, Attribute.GENERIC_MAX_HEALTH, KEY_HP, cd.getBonusHp());
-        addModifier(player, Attribute.GENERIC_ATTACK_DAMAGE, KEY_DAMAGE, cd.getBonusDamage());
-        addModifier(player, Attribute.GENERIC_MOVEMENT_SPEED, KEY_SPEED, cd.getSpeedModifier());
+        addModifier(player, Attribute.MAX_HEALTH, KEY_HP, cd.getBonusHp());
+        addModifier(player, Attribute.ATTACK_DAMAGE, KEY_DAMAGE, cd.getBonusDamage());
+        addModifier(player, Attribute.MOVEMENT_SPEED, KEY_SPEED, cd.getSpeedModifier());
 
         // Cache combat stats
         statsCache.put(player.getUniqueId(), new CombatStats(
@@ -76,10 +76,10 @@ public class StatsManager {
 
     /** Xoa tat ca modifier cua ElysiumCombat */
     public void remove(Player player) {
-        removeModifier(player, Attribute.GENERIC_MAX_HEALTH, KEY_HP);
-        removeModifier(player, Attribute.GENERIC_ATTACK_DAMAGE, KEY_DAMAGE);
-        removeModifier(player, Attribute.GENERIC_MOVEMENT_SPEED, KEY_SPEED);
-        removeModifier(player, Attribute.GENERIC_ARMOR, KEY_ARMOR);
+        removeModifier(player, Attribute.MAX_HEALTH, KEY_HP);
+        removeModifier(player, Attribute.ATTACK_DAMAGE, KEY_DAMAGE);
+        removeModifier(player, Attribute.MOVEMENT_SPEED, KEY_SPEED);
+        removeModifier(player, Attribute.ARMOR, KEY_ARMOR);
         statsCache.remove(player.getUniqueId());
     }
 
@@ -105,4 +105,4 @@ public class StatsManager {
             .filter(m -> m.getKey().equals(key))
             .forEach(inst::removeModifier);
     }
-                    }
+}
