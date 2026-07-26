@@ -3,13 +3,17 @@ package dev.elysium.combat.skill;
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.PlayerClass;
 import dev.elysium.core.api.CoreAPI;
+import dev.elysium.core.player.ElysiumPlayer;
 import dev.elysium.core.util.ColorUtil;
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -20,8 +24,11 @@ import java.util.*;
 public class SkillManager {
 
     private final ElysiumCombat plugin;
-    // classId -> slotIndex -> Skill
     private final Map<PlayerClass, Map<Integer, Skill>> skills = new EnumMap<>(PlayerClass.class);
+
+    public static final int CMD_SKILL_1 = 2001;
+    public static final int CMD_SKILL_2 = 2002;
+    public static final int CMD_SKILL_3 = 2003;
 
     public SkillManager(ElysiumCombat plugin) {
         this.plugin = plugin;
@@ -37,34 +44,89 @@ public class SkillManager {
         for (String className : root.getKeys(false)) {
             try {
                 PlayerClass pc = PlayerClass.valueOf(className.toUpperCase());
-                ConfigurationSection classSec = root.getConfigurationSection(className);
+                ConfigurationSection cs = root.getConfigurationSection(className);
                 Map<Integer, Skill> slotMap = new HashMap<>();
-
                 for (int i = 1; i <= 3; i++) {
-                    ConfigurationSection s = classSec.getConfigurationSection("skill" + i);
+                    ConfigurationSection s = cs.getConfigurationSection("skill" + i);
                     if (s == null) continue;
                     try {
-                        SkillEffect effect = SkillEffect.valueOf(s.getString("effect","DAMAGE_AOE").toUpperCase());
-                        Map<String, Object> params = new HashMap<>(s.getValues(false));
+                        SkillEffect fx = SkillEffect.valueOf(s.getString("effect","BUFF_POTION").toUpperCase());
                         slotMap.put(i, new Skill(
-                            s.getString("name","Skill " + i),
+                            s.getString("name","Skill "+i),
                             s.getString("description",""),
-                            s.getInt("mana-cost", 20),
-                            s.getInt("cooldown", 10),
-                            effect, params
+                            s.getString("icon",""),
+                            s.getInt("mana-cost",20),
+                            s.getInt("cooldown",10),
+                            fx, new HashMap<>(s.getValues(false))
                         ));
                     } catch (Exception e) {
-                        plugin.getLogger().warning("Loi load skill" + i + " cua " + className);
+                        plugin.getLogger().warning("Loi skill"+i+" cua "+className+": "+e.getMessage());
                     }
                 }
                 skills.put(pc, slotMap);
             } catch (IllegalArgumentException ignored) {}
         }
+        plugin.getLogger().info("Skills loaded: " + skills.size() + " classes.");
     }
 
     public Skill getSkill(PlayerClass pc, int slot) {
-        Map<Integer, Skill> slotMap = skills.get(pc);
-        return slotMap != null ? slotMap.get(slot) : null;
+        Map<Integer,Skill> m = skills.get(pc);
+        return m != null ? m.get(slot) : null;
+    }
+
+    // ── Build skill item ──────────────────────────────────────────────────────
+
+    public ItemStack buildSkillItem(Player player, PlayerClass pc, int slot) {
+        Skill skill = getSkill(pc, slot);
+        Material mat = Material.valueOf(plugin.getCombatConfig().getSkillItemMaterial());
+        if (skill == null) return new ItemStack(mat);
+        ItemStack item = new ItemStack(mat);
+        refreshSkillItemMeta(player, item, pc, slot, skill);
+        return item;
+    }
+
+    public void refreshSkillItemMeta(Player player, ItemStack item, PlayerClass pc, int slot, Skill skill) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        String cdKey = pc + "_skill" + slot;
+        long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
+        boolean onCd    = rem > 0;
+        boolean hasMana = CoreAPI.getMana(player) >= skill.getManaCost();
+
+        meta.setDisplayName(ColorUtil.color(skill.getIcon() + " &f" + skill.getName()));
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ColorUtil.color("&7" + skill.getDescription()));
+        lore.add("");
+        lore.add(ColorUtil.color("&bMana: &f" + skill.getManaCost() + (hasMana ? "" : " &c(khong du)")));
+        lore.add(ColorUtil.color("&7Cooldown: &f" + skill.getCooldownSeconds() + "s"));
+        lore.add("");
+        lore.add(onCd
+            ? ColorUtil.color("&c⏳ Hoi chieu: &e" + rem + "s")
+            : ColorUtil.color("&a✔ San sang &8| Chuot phai de dung"));
+
+        meta.setLore(lore);
+        meta.setCustomModelData(2000 + slot);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS,
+            ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        item.setItemMeta(meta);
+    }
+
+    public void refreshHotbarSkills(Player player, PlayerClass pc) {
+        if (pc == PlayerClass.NONE) return;
+        int[] slots = {
+            plugin.getCombatConfig().getSkillSlot(1),
+            plugin.getCombatConfig().getSkillSlot(2),
+            plugin.getCombatConfig().getSkillSlot(3)
+        };
+        for (int i = 1; i <= 3; i++) {
+            ItemStack item = player.getInventory().getItem(slots[i-1]);
+            Skill skill = getSkill(pc, i);
+            if (item == null || skill == null) continue;
+            if (!item.hasItemMeta() || item.getItemMeta().getCustomModelData() != 2000+i) continue;
+            refreshSkillItemMeta(player, item, pc, i, skill);
+        }
     }
 
     // ── Activate ─────────────────────────────────────────────────────────────
@@ -75,160 +137,87 @@ public class SkillManager {
             player.sendMessage(ColorUtil.color("&cHay chon class truoc: /combat class"));
             return;
         }
-
         Skill skill = getSkill(pc, slot);
-        if (skill == null) {
-            player.sendMessage(ColorUtil.color("&cClass cua ban khong co skill " + slot + "!"));
-            return;
-        }
+        if (skill == null) return;
 
         String cdKey = pc + "_skill" + slot;
         if (CoreAPI.getCore().getCooldownManager().has(player.getUniqueId(), cdKey)) {
-            long remaining = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
-            player.sendMessage(ColorUtil.color("&c" + skill.getName() + " &7dang hoi phuc! &e" + remaining + "s"));
+            long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
+            player.sendActionBar(ColorUtil.component("&c" + skill.getName() + " &7hoi chieu! &e" + rem + "s"));
+            return;
+        }
+        if (skill.getManaCost() > 0 && !CoreAPI.useMana(player, skill.getManaCost())) {
+            player.sendActionBar(ColorUtil.component("&cKhong du Mana! Can: &b" + skill.getManaCost()));
             return;
         }
 
-        if (!CoreAPI.useMana(player, skill.getManaCost())) {
-            player.sendMessage(ColorUtil.color("&cKhong du mana! Can: &b" + skill.getManaCost()));
-            return;
-        }
-
-        // Set cooldown
         CoreAPI.getCore().getCooldownManager().set(
             player.getUniqueId(), cdKey, skill.getCooldownSeconds() * 1000L);
 
-        // Execute
         executeEffect(player, skill);
 
-        // Feedback
-        player.sendActionBar(ColorUtil.component("&e" + skill.getName() + " &7kich hoat!"));
+        player.sendActionBar(ColorUtil.component(skill.getIcon() + " &e" + skill.getName() + " &7kich hoat!"));
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
+        player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().add(0,1,0), 10);
+
+        refreshHotbarSkills(player, pc);
     }
 
     // ── Effects ───────────────────────────────────────────────────────────────
 
     private void executeEffect(Player player, Skill skill) {
         switch (skill.getEffect()) {
-            case DAMAGE_AOE    -> damageAoe(player, skill);
-            case DAMAGE_SINGLE -> damageSingle(player, skill);
-            case KNOCKBACK     -> knockback(player, skill);
-            case BUFF_SELF     -> buffSelf(player, skill);
-            case DEBUFF_AOE    -> debuffAoe(player, skill);
-            case PROJECTILE    -> projectile(player, skill);
-            case DASH          -> dash(player, skill);
-            case FIRE_ARROW    -> fireArrow(player, skill);
-            case ARROW_RAIN    -> arrowRain(player, skill);
+            case BUFF_POTION  -> buffPotion(player, skill);
+            case RESTORE_MANA -> restoreMana(player, skill);
+            case HEAL         -> heal(player, skill);
+            case DASH         -> dash(player, skill);
         }
     }
 
-    private void damageAoe(Player player, Skill skill) {
-        double radius = skill.get("radius", 4.0);
-        double damage = skill.get("damage", 8.0);
-        player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add(0,1,0), 5);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1f, 1f);
-        player.getNearbyEntities(radius, radius, radius).stream()
-            .filter(e -> e instanceof LivingEntity && !e.equals(player))
-            .forEach(e -> ((LivingEntity)e).damage(damage, player));
+    private void buffPotion(Player player, Skill skill) {
+        applyPotion(player,
+            skill.get("potion-type","SPEED"),
+            skill.get("potion-amplifier",0),
+            skill.get("duration",100));
+        String extra = skill.get("extra-potion-type","");
+        if (!extra.isBlank()) {
+            applyPotion(player, extra,
+                skill.get("extra-potion-amplifier",0),
+                skill.get("extra-duration",100));
+        }
     }
 
-    private void damageSingle(Player player, Skill skill) {
-        double damage = skill.get("damage", 15.0);
-        LivingEntity target = getNearestEnemy(player, 8);
-        if (target == null) { player.sendMessage(ColorUtil.color("&cKhong co muc tieu!")); return; }
-        player.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0,1,0), 10);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1f, 0.8f);
-        target.damage(damage, player);
+    private void applyPotion(Player player, String name, int amp, int dur) {
+        PotionEffectType type = PotionEffectType.getByName(name);
+        if (type == null) { plugin.getLogger().warning("PotionEffectType khong tim thay: "+name); return; }
+        player.addPotionEffect(new PotionEffect(type, dur, amp, false, true, true));
     }
 
-    private void knockback(Player player, Skill skill) {
-        double kb = skill.get("knockback", 3.0);
-        int slowDur = skill.get("slow-duration", 60);
-        int slowAmp = skill.get("slow-amplifier", 1);
-        LivingEntity target = getNearestEnemy(player, 10);
-        if (target == null) { player.sendMessage(ColorUtil.color("&cKhong co muc tieu!")); return; }
-        Vector dir = target.getLocation().subtract(player.getLocation()).toVector().normalize().setY(0.4);
-        target.setVelocity(dir.multiply(kb));
-        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, slowDur, slowAmp));
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1f, 1f);
+    private void restoreMana(Player player, Skill skill) {
+        int amount = skill.get("mana-restore", 50);
+        ElysiumPlayer ep = CoreAPI.getPlayer(player);
+        if (ep != null) {
+            ep.addMana(amount);
+            player.getWorld().spawnParticle(Particle.ENCHANT,
+                player.getLocation().add(0,1,0), 20, 0.5, 0.5, 0.5, 0.2);
+        }
     }
 
-    private void buffSelf(Player player, Skill skill) {
-        String potionName = skill.get("potion-type", "SPEED");
-        int amplifier = skill.get("potion-amplifier", 1);
-        int duration  = skill.get("duration", 100);
-        PotionEffectType type = PotionEffectType.getByName(potionName);
-        if (type == null) { plugin.getLogger().warning("PotionEffectType khong hop le: " + potionName); return; }
-        player.addPotionEffect(new PotionEffect(type, duration, amplifier));
-        player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().add(0,1,0), 15);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
-    }
-
-    private void debuffAoe(Player player, Skill skill) {
-        double radius   = skill.get("radius", 5.0);
-        String potName  = skill.get("potion-type", "SLOWNESS");
-        int amplifier   = skill.get("potion-amplifier", 1);
-        int duration    = skill.get("duration", 60);
-        PotionEffectType type = PotionEffectType.getByName(potName);
-        if (type == null) return;
-        player.getWorld().spawnParticle(Particle.SNOWFLAKE, player.getLocation().add(0,1,0), 30, radius/2, 1, radius/2, 0);
-        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_POWDER_SNOW_PLACE, 1f, 0.5f);
-        player.getNearbyEntities(radius, radius, radius).stream()
-            .filter(e -> e instanceof LivingEntity && !e.equals(player))
-            .forEach(e -> ((LivingEntity)e).addPotionEffect(new PotionEffect(type, duration, amplifier)));
-    }
-
-    private void projectile(Player player, Skill skill) {
-        Fireball fb = player.launchProjectile(Fireball.class);
-        fb.setYield(1.5f);
-        fb.setIsIncendiary(true);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, 0.8f);
+    private void heal(Player player, Skill skill) {
+        double amt  = skill.get("heal-amount", 6.0);
+        int regenDur = skill.get("regen-duration", 60);
+        int regenAmp = skill.get("regen-amplifier", 0);
+        player.setHealth(Math.min(player.getHealth() + amt, player.getMaxHealth()));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, regenDur, regenAmp));
+        player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0,1,0), 8, 0.5,0.5,0.5, 0);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.8f);
     }
 
     private void dash(Player player, Skill skill) {
-        double distance = skill.get("dash-distance", 5.0);
-        Vector dir = player.getLocation().getDirection().normalize().multiply(distance);
-        Location target = player.getLocation().add(dir);
-        target.setY(player.getLocation().getY());
-        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 10, 0.3, 0.3, 0.3, 0.05);
-        player.teleport(target);
-        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 10, 0.3, 0.3, 0.3, 0.05);
+        double dist = skill.get("dash-distance", 6.0);
+        Vector dir = player.getLocation().getDirection().normalize().multiply(dist).setY(0.3);
+        player.setVelocity(dir);
+        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 15, 0.3,0.2,0.3, 0.05);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.5f, 1.5f);
     }
-
-    private void fireArrow(Player player, Skill skill) {
-        double damage = skill.get("damage", 10.0);
-        Arrow arrow = player.launchProjectile(Arrow.class);
-        arrow.setFireTicks(100);
-        // Luu damage vao metadata de xu ly trong CombatListener
-        arrow.setMetadata("elysium_skill_damage",
-            new org.bukkit.metadata.FixedMetadataValue(plugin, damage));
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1f, 1.2f);
-    }
-
-    private void arrowRain(Player player, Skill skill) {
-        double radius = skill.get("radius", 6.0);
-        int count  = skill.get("arrow-count", 8);
-        double dmg = skill.get("damage", 5.0);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1f, 0.7f);
-        for (int i = 0; i < count; i++) {
-            double angle = (2 * Math.PI / count) * i;
-            double x = player.getLocation().getX() + radius * Math.cos(angle);
-            double z = player.getLocation().getZ() + radius * Math.sin(angle);
-            Location loc = new Location(player.getWorld(), x, player.getLocation().getY() + 10, z);
-            Arrow arrow = player.getWorld().spawn(loc, Arrow.class);
-            arrow.setVelocity(new Vector(0, -1.5, 0));
-            arrow.setMetadata("elysium_skill_damage",
-                new org.bukkit.metadata.FixedMetadataValue(plugin, dmg));
-        }
-    }
-
-    // ── Helper ───────────────────────────────────────────────────────────────
-
-    private LivingEntity getNearestEnemy(Player player, double radius) {
-        return player.getNearbyEntities(radius, radius, radius).stream()
-            .filter(e -> e instanceof LivingEntity && !e.equals(player))
-            .map(e -> (LivingEntity) e)
-            .min(Comparator.comparingDouble(e -> e.getLocation().distanceSquared(player.getLocation())))
-            .orElse(null);
-    }
-          }
+}
