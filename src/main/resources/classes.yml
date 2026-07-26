@@ -1,0 +1,56 @@
+# Dinh nghia cac class
+# bonus-hp: HP them (them vao 20 HP mac dinh)
+# bonus-damage: Sat thuong them (ADD_NUMBER)
+# defense: % giam sat thuong nhan vao (0-100)
+# speed-modifier: Toc do di chuyen them/bot
+# mana-regen: Mana hoi phuc moi 2 giay
+# max-mana-bonus: Them/bot max mana
+
+classes:
+  WARRIOR:
+    display-name: "&c⚔ Chiến Binh"
+    description: "Manh me, bat khuat, bao ve dong doi"
+    item: IRON_SWORD
+    stats:
+      bonus-hp: 10.0
+      bonus-damage: 2.0
+      defense: 15
+      speed-modifier: -0.005
+      mana-regen: 2
+      max-mana-bonus: -30
+
+  MAGE:
+    display-name: "&9✦ Pháp Sư"
+    description: "Phep thuat toi thuong, tri tue vo bien"
+    item: BLAZE_ROD
+    stats:
+      bonus-hp: -4.0
+      bonus-damage: 0.5
+      defense: 5
+      speed-modifier: 0.0
+      mana-regen: 10
+      max-mana-bonus: 100
+
+  ARCHER:
+    display-name: "&a🏹 Cung Thủ"
+    description: "Chuan xac, nhanh nhen, tan cong tu xa"
+    item: BOW
+    stats:
+      bonus-hp: 0.0
+      bonus-damage: 1.5
+      defense: 5
+      speed-modifier: 0.02
+      mana-regen: 4
+      max-mana-bonus: 0
+
+  ROGUE:
+    display-name: "&e🗡 Thích Khách"
+    description: "Bi an, nguy hiem, dam phat crit cao"
+    item: STONE_SWORD
+    stats:
+      bonus-hp: -4.0
+      bonus-damage: 3.0
+      defense: 0
+      speed-modifier: 0.04
+      mana-regen: 3
+      max-mana-bonus: -20
