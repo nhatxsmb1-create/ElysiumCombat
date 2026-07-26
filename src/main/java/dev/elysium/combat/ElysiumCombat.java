@@ -13,7 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ElysiumCombat extends JavaPlugin {
 
     private static ElysiumCombat instance;
-
     private CombatConfig  combatConfig;
     private ClassManager  classManager;
     private SkillManager  skillManager;
@@ -23,7 +22,6 @@ public class ElysiumCombat extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         saveDefaultConfig();
         saveResource("classes.yml", false);
         saveResource("skills.yml", false);
@@ -40,20 +38,19 @@ public class ElysiumCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CombatListener(this), this);
         getServer().getPluginManager().registerEvents(new SkillListener(this), this);
 
-        // Apply stats cho cac player da online (reload case)
+        // Apply cho player da online (reload case)
         getServer().getOnlinePlayers().forEach(p -> {
             classManager.loadPlayerClass(p);
             statsManager.apply(p);
+            classManager.giveSkillItems(p);
         });
 
         getLogger().info("=== ElysiumCombat v" + getDescription().getVersion() + " enabled! ===");
-        getLogger().info("Classes: " + classManager.getClassCount() + " | Skills loaded.");
     }
 
     @Override
     public void onDisable() {
         if (manaManager != null) manaManager.stop();
-        // Remove tat ca attribute modifier khi disable
         getServer().getOnlinePlayers().forEach(p -> statsManager.remove(p));
         getLogger().info("ElysiumCombat disabled.");
     }
