@@ -2,9 +2,12 @@ package dev.elysium.combat;
 
 import dev.elysium.combat.clazz.ClassData;
 import dev.elysium.combat.clazz.PlayerClass;
+import dev.elysium.core.achievement.AchievementType;
 import dev.elysium.core.api.CoreAPI;
+import dev.elysium.core.event.ElysiumClassChangeEvent;
 import dev.elysium.core.player.ElysiumPlayer;
 import dev.elysium.core.util.ColorUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -39,20 +42,36 @@ public class CombatCommand implements CommandExecutor {
             }
             return;
         }
+
         try {
             PlayerClass pc = PlayerClass.valueOf(args[1].toUpperCase());
             ClassData cd = plugin.getClassManager().getClassData(pc);
             if (cd == null) { player.sendMessage(ColorUtil.color("&cClass chua duoc config!")); return; }
 
             ElysiumPlayer ep = CoreAPI.getPlayer(player);
+            String oldClass = ep != null ? ep.getPlayerClass() : "NONE";
+
+            // Fire ElysiumClassChangeEvent — cho phep cancel
+            ElysiumClassChangeEvent event = new ElysiumClassChangeEvent(player, ep, oldClass, pc.name());
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                player.sendMessage(ColorUtil.color("&cKhong the doi class luc nay!"));
+                return;
+            }
+
+            // Apply class
             if (ep != null) ep.setPlayerClass(pc.name());
             plugin.getClassManager().setPlayerClass(player.getUniqueId(), pc);
             plugin.getStatsManager().apply(player);
             plugin.getClassManager().giveSkillItems(player);
 
+            // Award achievement lan dau chon class
+            CoreAPI.awardAchievement(player, AchievementType.CLASS_CHOSEN);
+
             player.sendMessage(ColorUtil.color("&a[CLASS] Ban da chon: " + cd.getDisplayName()));
             player.sendMessage(ColorUtil.color("&73 skill item da xuat hien o slot 7-8-9"));
             player.sendMessage(ColorUtil.color("&7Chuot phai vao item de kich hoat skill!"));
+
         } catch (IllegalArgumentException e) {
             player.sendMessage(ColorUtil.color("&cClass khong ton tai! Xem: /combat class"));
         }
@@ -72,7 +91,7 @@ public class CombatCommand implements CommandExecutor {
         if (cd != null) {
             player.sendMessage(ColorUtil.color("  &7Defense: &a" + cd.getDefense() + "%"));
             player.sendMessage(ColorUtil.color("  &7Mana Regen: &b+" + cd.getManaRegen() + "/2s"));
-            player.sendMessage(ColorUtil.color("  &8Skill o hotbar slot 7-8-9, chuot phai de dung"));
+            player.sendMessage(ColorUtil.color("  &8Skill o slot 7-8-9, chuot phai de dung"));
         }
     }
 
