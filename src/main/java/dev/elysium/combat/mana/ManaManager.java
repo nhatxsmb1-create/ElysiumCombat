@@ -11,53 +11,41 @@ import org.bukkit.scheduler.BukkitTask;
 public class ManaManager {
 
     private final ElysiumCombat plugin;
-    private BukkitTask regenTask;
-    private BukkitTask displayTask;
+    private BukkitTask regenTask, displayTask;
 
     public ManaManager(ElysiumCombat plugin) {
         this.plugin = plugin;
-        startTasks();
+        start();
     }
 
-    private void startTasks() {
-        int regenInterval    = plugin.getCombatConfig().getManaRegenInterval();
-        int displayInterval  = plugin.getCombatConfig().getManaDisplayInterval();
-
-        // Regen task
+    private void start() {
+        // Regen mana moi 2 giay — dung CoreAPI de fire ElysiumManaChangeEvent
         regenTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             for (Player p : plugin.getServer().getOnlinePlayers()) {
                 ElysiumPlayer ep = CoreAPI.getPlayer(p);
                 if (ep == null) continue;
-                CombatStats stats = plugin.getStatsManager().getStats(p);
-                int regen = stats.getManaRegen();
-                if (regen > 0) ep.addMana(regen);
+                CombatStats st = plugin.getStatsManager().getStats(p);
+                if (st.getManaRegen() > 0) {
+                    CoreAPI.addMana(p, st.getManaRegen()); // fires ElysiumManaChangeEvent
+                }
             }
-        }, regenInterval, regenInterval);
+        }, 40L, 40L);
 
-        // Display task (action bar)
+        // Hien thi mana bar tren action bar
         displayTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             for (Player p : plugin.getServer().getOnlinePlayers()) {
                 ElysiumPlayer ep = CoreAPI.getPlayer(p);
                 if (ep == null) continue;
-                String bar = ColorUtil.progressBar(ep.getMana(), ep.getMaxMana(), 8, '■', '□', "&b", "&8");
-                String text = bar + " &b" + ep.getMana() + "/" + ep.getMaxMana() + " Mana";
-                p.sendActionBar(ColorUtil.component(text));
+                String bar = ColorUtil.progressBar(
+                    ep.getMana(), ep.getMaxMana(), 8, '■', '□', "&b", "&8");
+                p.sendActionBar(ColorUtil.component(
+                    bar + " &b" + ep.getMana() + "/" + ep.getMaxMana() + " Mana"));
             }
-        }, displayInterval, displayInterval);
+        }, 20L, 20L);
     }
 
     public void stop() {
         if (regenTask   != null) regenTask.cancel();
         if (displayTask != null) displayTask.cancel();
     }
-
-    public int getMana(Player player) {
-        ElysiumPlayer ep = CoreAPI.getPlayer(player);
-        return ep != null ? ep.getMana() : 0;
-    }
-
-    public boolean useMana(Player player, int amount) {
-        ElysiumPlayer ep = CoreAPI.getPlayer(player);
-        return ep != null && ep.useMana(amount);
-    }
-    }
+}
