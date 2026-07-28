@@ -1,8 +1,5 @@
-# Tat ca skill la BUFF ban than
+# Skill chi con cooldown, khong ton mana
 # effect: BUFF_POTION | RESTORE_MANA | HEAL | DASH
-# Skill item CustomModelData: 2001, 2002, 2003
-# Potion types: SPEED, STRENGTH, RESISTANCE, REGENERATION,
-#   FIRE_RESISTANCE, HASTE, INVISIBILITY, NIGHT_VISION, ABSORPTION
 
 skills:
   WARRIOR:
@@ -10,7 +7,7 @@ skills:
       name: "Thiet Giap"
       description: "Tang khang sat thuong trong 8 giay"
       icon: "&c"
-      mana-cost: 20
+      mana-cost: 0
       cooldown: 15
       effect: BUFF_POTION
       potion-type: RESISTANCE
@@ -20,7 +17,7 @@ skills:
       name: "Hung Khi"
       description: "Tang suc manh danh trong 8 giay"
       icon: "&c"
-      mana-cost: 30
+      mana-cost: 0
       cooldown: 20
       effect: BUFF_POTION
       potion-type: STRENGTH
@@ -30,7 +27,7 @@ skills:
       name: "Tai Sinh"
       description: "Hoi phuc 8 HP va Regeneration 5 giay"
       icon: "&c"
-      mana-cost: 50
+      mana-cost: 0
       cooldown: 60
       effect: HEAL
       heal-amount: 8.0
@@ -50,7 +47,7 @@ skills:
       name: "Man Phep"
       description: "Khang lua va sat thuong trong 12 giay"
       icon: "&9"
-      mana-cost: 35
+      mana-cost: 0
       cooldown: 25
       effect: BUFF_POTION
       potion-type: FIRE_RESISTANCE
@@ -63,7 +60,7 @@ skills:
       name: "Khuech Dai"
       description: "Tang toc do danh va di chuyen 10 giay"
       icon: "&9"
-      mana-cost: 60
+      mana-cost: 0
       cooldown: 60
       effect: BUFF_POTION
       potion-type: HASTE
@@ -78,7 +75,7 @@ skills:
       name: "Buoc Gio"
       description: "Tang toc do di chuyen manh 6 giay"
       icon: "&a"
-      mana-cost: 20
+      mana-cost: 0
       cooldown: 12
       effect: BUFF_POTION
       potion-type: SPEED
@@ -88,7 +85,7 @@ skills:
       name: "Mat Dai Bang"
       description: "Tang tam nhin ban dem 15 giay"
       icon: "&a"
-      mana-cost: 25
+      mana-cost: 0
       cooldown: 20
       effect: BUFF_POTION
       potion-type: NIGHT_VISION
@@ -98,7 +95,7 @@ skills:
       name: "Phan Xa"
       description: "Tang khang sat thuong manh 8 giay"
       icon: "&a"
-      mana-cost: 50
+      mana-cost: 0
       cooldown: 60
       effect: BUFF_POTION
       potion-type: RESISTANCE
@@ -110,7 +107,7 @@ skills:
       name: "Tang Hinh"
       description: "An hien trong 5 giay"
       icon: "&e"
-      mana-cost: 30
+      mana-cost: 0
       cooldown: 20
       effect: BUFF_POTION
       potion-type: INVISIBILITY
@@ -120,7 +117,7 @@ skills:
       name: "Bong Toi"
       description: "Tang suc manh va toc do 6 giay"
       icon: "&e"
-      mana-cost: 40
+      mana-cost: 0
       cooldown: 25
       effect: BUFF_POTION
       potion-type: STRENGTH
@@ -133,7 +130,7 @@ skills:
       name: "Phong Than"
       description: "Lang xe nhanh ve phia truoc 8 block"
       icon: "&e"
-      mana-cost: 25
+      mana-cost: 0
       cooldown: 10
       effect: DASH
       dash-distance: 8.0
