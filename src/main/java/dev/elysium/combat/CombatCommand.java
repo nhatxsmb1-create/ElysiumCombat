@@ -2,6 +2,7 @@ package dev.elysium.combat;
 
 import dev.elysium.combat.clazz.ClassData;
 import dev.elysium.combat.clazz.PlayerClass;
+import dev.elysium.combat.gui.SkillMenuGui;
 import dev.elysium.core.achievement.AchievementType;
 import dev.elysium.core.api.CoreAPI;
 import dev.elysium.core.event.ElysiumClassChangeEvent;
@@ -22,12 +23,15 @@ public class CombatCommand implements CommandExecutor {
         if (args.length == 0) { sendHelp(player); return true; }
 
         switch (args[0].toLowerCase()) {
-            case "class", "c" -> handleClass(player, args);
-            case "info", "i"  -> handleInfo(player);
-            default           -> sendHelp(player);
+            case "class", "c"       -> handleClass(player, args);
+            case "info", "i"        -> handleInfo(player);
+            case "menu", "m", "skills" -> handleMenu(player);
+            default                 -> sendHelp(player);
         }
         return true;
     }
+
+    // ── /combat class ─────────────────────────────────────────────────────────
 
     private void handleClass(Player player, String[] args) {
         if (args.length < 2) {
@@ -42,7 +46,6 @@ public class CombatCommand implements CommandExecutor {
             }
             return;
         }
-
         try {
             PlayerClass pc = PlayerClass.valueOf(args[1].toUpperCase());
             ClassData cd = plugin.getClassManager().getClassData(pc);
@@ -51,7 +54,7 @@ public class CombatCommand implements CommandExecutor {
             ElysiumPlayer ep = CoreAPI.getPlayer(player);
             String oldClass = ep != null ? ep.getPlayerClass() : "NONE";
 
-            // Fire ElysiumClassChangeEvent — cho phep cancel
+            // Fire ElysiumClassChangeEvent
             ElysiumClassChangeEvent event = new ElysiumClassChangeEvent(player, ep, oldClass, pc.name());
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
@@ -59,23 +62,22 @@ public class CombatCommand implements CommandExecutor {
                 return;
             }
 
-            // Apply class
             if (ep != null) ep.setPlayerClass(pc.name());
             plugin.getClassManager().setPlayerClass(player.getUniqueId(), pc);
             plugin.getStatsManager().apply(player);
-            plugin.getClassManager().giveSkillItems(player);
+            plugin.getClassManager().giveSkillItems(player); // Tự động đổi skill item
 
-            // Award achievement lan dau chon class
             CoreAPI.awardAchievement(player, AchievementType.CLASS_CHOSEN);
 
             player.sendMessage(ColorUtil.color("&a[CLASS] Ban da chon: " + cd.getDisplayName()));
-            player.sendMessage(ColorUtil.color("&73 skill item da xuat hien o slot 7-8-9"));
-            player.sendMessage(ColorUtil.color("&7Chuot phai vao item de kich hoat skill!"));
-
+            player.sendMessage(ColorUtil.color("&73 skill item da cap nhat o slot 7-8-9"));
+            player.sendMessage(ColorUtil.color("&7Dung /combat menu de xem skill!"));
         } catch (IllegalArgumentException e) {
             player.sendMessage(ColorUtil.color("&cClass khong ton tai! Xem: /combat class"));
         }
     }
+
+    // ── /combat info ──────────────────────────────────────────────────────────
 
     private void handleInfo(Player player) {
         PlayerClass pc = plugin.getClassManager().getPlayerClass(player.getUniqueId());
@@ -91,13 +93,20 @@ public class CombatCommand implements CommandExecutor {
         if (cd != null) {
             player.sendMessage(ColorUtil.color("  &7Defense: &a" + cd.getDefense() + "%"));
             player.sendMessage(ColorUtil.color("  &7Mana Regen: &b+" + cd.getManaRegen() + "/2s"));
-            player.sendMessage(ColorUtil.color("  &8Skill o slot 7-8-9, chuot phai de dung"));
         }
+        player.sendMessage(ColorUtil.color("  &8/combat menu de xem skill GUI"));
+    }
+
+    // ── /combat menu ──────────────────────────────────────────────────────────
+
+    private void handleMenu(Player player) {
+        CoreAPI.getCore().getGuiManager().open(player, new SkillMenuGui(player, plugin));
     }
 
     private void sendHelp(Player player) {
         player.sendMessage(ColorUtil.color("&c=== ElysiumCombat ==="));
         player.sendMessage(ColorUtil.color("  &7/combat class &f- Xem va chon class"));
         player.sendMessage(ColorUtil.color("  &7/combat info &f- Xem thong tin combat"));
+        player.sendMessage(ColorUtil.color("  &7/combat menu &f- Mo Skill GUI"));
     }
 }
