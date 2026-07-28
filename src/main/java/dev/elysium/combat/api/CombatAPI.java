@@ -4,21 +4,11 @@ import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.ClassData;
 import dev.elysium.combat.clazz.PlayerClass;
 import dev.elysium.combat.stats.CombatStats;
+import dev.elysium.core.api.CoreAPI;
 import org.bukkit.entity.Player;
-
 import java.util.UUID;
 
-/**
- * Public API cho ElysiumCombat.
- * Cac plugin khac (ElysiumWar, ElysiumAdventure...) goi class nay.
- *
- * Vi du:
- *   PlayerClass pc = CombatAPI.getClass(player);
- *   CombatStats stats = CombatAPI.getStats(player);
- *   double defense = stats.getDefense(); // % giam sat thuong
- */
 public final class CombatAPI {
-
     private static ElysiumCombat combat;
     public static void init(ElysiumCombat plugin) { combat = plugin; }
 
@@ -26,7 +16,10 @@ public final class CombatAPI {
     public static PlayerClass  getClass(UUID uuid)    { return combat.getClassManager().getPlayerClass(uuid); }
     public static ClassData    getClassData(Player p) { return combat.getClassManager().getClassData(getClass(p)); }
     public static CombatStats  getStats(Player p)     { return combat.getStatsManager().getStats(p); }
-    public static int          getMana(Player p)      { return combat.getManaManager().getMana(p); }
-    public static boolean      useMana(Player p, int amount) { return combat.getManaManager().useMana(p, amount); }
+
+    // Dung CoreAPI thay vi ManaManager truc tiep
+    public static int     getMana(Player p)          { return CoreAPI.getMana(p); }
+    public static boolean useMana(Player p, int amt) { return CoreAPI.useMana(p, amt); }
+
     public static ElysiumCombat getCombat()           { return combat; }
 }
