@@ -16,3 +16,8 @@ mana:
 
 # Cap nhat cooldown lore moi bao nhieu tick
 cooldown-update-interval: 20
+class-change:
+  enabled: true
+  item:
+    material: NETHER_STAR
+    amount: 1
