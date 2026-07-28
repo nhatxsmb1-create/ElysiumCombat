@@ -34,15 +34,15 @@ public class ClassManager {
                 ConfigurationSection s  = root.getConfigurationSection(key);
                 ConfigurationSection st = s.getConfigurationSection("stats");
                 classes.put(pc, new ClassData(key,
-                    ColorUtil.color(s.getString("display-name", key)),
-                    s.getString("description", ""),
-                    s.getString("item", "STONE_SWORD"),
-                    st != null ? st.getDouble("bonus-hp",0)       : 0,
-                    st != null ? st.getDouble("bonus-damage",0)    : 0,
-                    st != null ? st.getInt("defense",0)            : 0,
-                    st != null ? st.getDouble("speed-modifier",0)  : 0,
-                    st != null ? st.getInt("mana-regen",2)         : 2,
-                    st != null ? st.getInt("max-mana-bonus",0)     : 0
+                    ColorUtil.color(s.getString("display-name",key)),
+                    s.getString("description",""),
+                    s.getString("item","STONE_SWORD"),
+                    st != null ? st.getDouble("bonus-hp",0)      : 0,
+                    st != null ? st.getDouble("bonus-damage",0)   : 0,
+                    st != null ? st.getInt("defense",0)           : 0,
+                    st != null ? st.getDouble("speed-modifier",0) : 0,
+                    st != null ? st.getInt("mana-regen",2)        : 2,
+                    st != null ? st.getInt("max-mana-bonus",0)    : 0
                 ));
             } catch (IllegalArgumentException e) {
                 plugin.getLogger().warning("Class khong hop le: " + key);
@@ -61,29 +61,52 @@ public class ClassManager {
     }
 
     /**
-     * Cap skill item vao hotbar slot 6,7,8.
-     * Goi khi: chon class, join server, reload.
+     * Cap skill item vao hotbar.
+     * 1. Quet toan bo inventory, xoa het skill item cu.
+     * 2. Cuu item thuong khoi slot skill (tra lai inventory / drop neu day).
+     * 3. Dat skill item moi vao slot 6, 7, 8.
      */
     public void giveSkillItems(Player player) {
-        PlayerClass pc = getPlayerClass(player.getUniqueId());
         int[] slots = {
             plugin.getCombatConfig().getSkillSlot(1),
             plugin.getCombatConfig().getSkillSlot(2),
             plugin.getCombatConfig().getSkillSlot(3)
         };
-        if (pc == PlayerClass.NONE) {
-            for (int slot : slots) player.getInventory().setItem(slot, null);
-            return;
+
+        // Buoc 1: Xoa tat ca skill item cu trong toan bo inventory
+        for (int i = 0; i < player.getInventory().getSize(); i++) {
+            ItemStack item = player.getInventory().getItem(i);
+            if (plugin.getSkillManager().isSkillItem(item)) {
+                player.getInventory().setItem(i, null);
+            }
         }
+
+        // Buoc 2: Cuu item thuong khoi cac slot skill
+        for (int slot : slots) {
+            ItemStack existing = player.getInventory().getItem(slot);
+            if (existing != null && !existing.getType().isAir()) {
+                // Thu them vao inventory, neu day thi drop
+                Map<Integer, ItemStack> leftover = player.getInventory().addItem(existing);
+                for (ItemStack drop : leftover.values()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), drop);
+                }
+                player.getInventory().setItem(slot, null);
+            }
+        }
+
+        // Buoc 3: Dat skill item moi
+        PlayerClass pc = getPlayerClass(player.getUniqueId());
+        if (pc == PlayerClass.NONE) return;
+
         for (int i = 1; i <= 3; i++) {
             ItemStack item = plugin.getSkillManager().buildSkillItem(player, pc, i);
-            player.getInventory().setItem(slots[i - 1], item);
+            player.getInventory().setItem(slots[i-1], item);
         }
     }
 
     public void setPlayerClass(UUID uuid, PlayerClass pc) { playerClass.put(uuid, pc); }
     public PlayerClass             getPlayerClass(UUID uuid) { return playerClass.getOrDefault(uuid, PlayerClass.NONE); }
     public ClassData               getClassData(PlayerClass pc) { return classes.get(pc); }
-    public Collection<ClassData>   getAllClasses()           { return classes.values(); }
-    public int                     getClassCount()          { return classes.size(); }
+    public Collection<ClassData>   getAllClasses()          { return classes.values(); }
+    public int                     getClassCount()         { return classes.size(); }
 }
