@@ -1,16 +1,12 @@
-# Dinh nghia cac class
-# bonus-hp: HP them (them vao 20 HP mac dinh)
-# bonus-damage: Sat thuong them (ADD_NUMBER)
-# defense: % giam sat thuong nhan vao (0-100)
-# speed-modifier: Toc do di chuyen them/bot
-# mana-regen: Mana hoi phuc moi 2 giay
-# max-mana-bonus: Them/bot max mana
-
 classes:
   WARRIOR:
-    display-name: "&c⚔ Chiến Binh"
+    display-name: "&c⚔ Chien Binh"
     description: "Manh me, bat khuat, bao ve dong doi"
     item: IRON_SWORD
+    # Chi phi doi class (lan dau chon MIEN PHI)
+    change-cost:
+      - material: IRON_INGOT
+        amount: 16
     stats:
       bonus-hp: 10.0
       bonus-damage: 2.0
@@ -20,9 +16,14 @@ classes:
       max-mana-bonus: -30
 
   MAGE:
-    display-name: "&9✦ Pháp Sư"
+    display-name: "&9✦ Phap Su"
     description: "Phep thuat toi thuong, tri tue vo bien"
     item: BLAZE_ROD
+    change-cost:
+      - material: BLAZE_ROD
+        amount: 8
+      - material: GOLD_INGOT
+        amount: 8
     stats:
       bonus-hp: -4.0
       bonus-damage: 0.5
@@ -32,9 +33,14 @@ classes:
       max-mana-bonus: 100
 
   ARCHER:
-    display-name: "&a🏹 Cung Thủ"
+    display-name: "&a🏹 Cung Thu"
     description: "Chuan xac, nhanh nhen, tan cong tu xa"
     item: BOW
+    change-cost:
+      - material: ARROW
+        amount: 32
+      - material: FEATHER
+        amount: 8
     stats:
       bonus-hp: 0.0
       bonus-damage: 1.5
@@ -44,9 +50,12 @@ classes:
       max-mana-bonus: 0
 
   ROGUE:
-    display-name: "&e🗡 Thích Khách"
+    display-name: "&e🗡 Thich Khach"
     description: "Bi an, nguy hiem, dam phat crit cao"
     item: STONE_SWORD
+    change-cost:
+      - material: EMERALD
+        amount: 8
     stats:
       bonus-hp: -4.0
       bonus-damage: 3.0
