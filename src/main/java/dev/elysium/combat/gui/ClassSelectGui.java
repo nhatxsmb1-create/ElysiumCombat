@@ -24,7 +24,7 @@ public class ClassSelectGui extends ElysiumGui {
     private final ElysiumCombat combat;
 
     public ClassSelectGui(ElysiumCombat combat) {
-        super("&c⚔ Chon Class", 27);
+        super("&c⚔ Chon Class", 54);  // Mo rong len 54 (6 hang) de co hang Thuc Tinh
         this.combat = combat;
     }
 
@@ -36,7 +36,7 @@ public class ClassSelectGui extends ElysiumGui {
         boolean firstTime   = current == PlayerClass.NONE;
         ItemStack cost      = getChangeCost();
 
-        // Header
+        // ── Header ────────────────────────────────────────────────────────────
         fill(4, new ItemBuilder(Material.BOOK)
             .name("&c⚔ Chon Class")
             .lore(
@@ -47,10 +47,12 @@ public class ClassSelectGui extends ElysiumGui {
                     : "&7Doi class mien phi")
             ).build());
 
-        // 4 classes
-        int[] slots = {10, 12, 14, 16};
-        PlayerClass[] classes = {PlayerClass.WARRIOR, PlayerClass.MAGE,
-                                  PlayerClass.ARCHER,  PlayerClass.ROGUE};
+        // ── 4 Class (hang 2, slot 10 12 14 16) ───────────────────────────────
+        int[] classSlots = {10, 12, 14, 16};
+        PlayerClass[] classes = {
+            PlayerClass.WARRIOR, PlayerClass.MAGE,
+            PlayerClass.ARCHER,  PlayerClass.ROGUE
+        };
 
         for (int i = 0; i < classes.length; i++) {
             PlayerClass pc = classes[i];
@@ -62,12 +64,12 @@ public class ClassSelectGui extends ElysiumGui {
 
             ItemBuilder builder = new ItemBuilder(Material.valueOf(cd.getItem().toUpperCase()))
                 .name((isActive ? "&a✔ " : "") + cd.getDisplayName())
-                .lore(buildLore(cd, isActive, firstTime, canAfford, cost));
+                .lore(buildClassLore(cd, isActive, firstTime, canAfford, cost));
 
             if (isActive) builder.glow();
 
             final PlayerClass finalPc = pc;
-            setButton(slots[i], new GuiButton(builder.build(), e -> {
+            setButton(classSlots[i], new GuiButton(builder.build(), e -> {
                 Player player = (Player) e.getWhoClicked();
 
                 if (finalPc == combat.getClassManager().getPlayerClass(player.getUniqueId())) {
@@ -75,7 +77,7 @@ public class ClassSelectGui extends ElysiumGui {
                     return;
                 }
 
-                boolean free = combat.getClassManager()
+                boolean free       = combat.getClassManager()
                     .getPlayerClass(player.getUniqueId()) == PlayerClass.NONE;
                 ItemStack changeCost = getChangeCost();
 
@@ -118,23 +120,101 @@ public class ClassSelectGui extends ElysiumGui {
             }));
         }
 
-        // Footer
-        fill(22, new ItemBuilder(Material.PAPER)
+        // ── Divider: hang 3 (slot 18-26) ─────────────────────────────────────
+        for (int s = 18; s <= 26; s++) {
+            fill(s, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
+                .name("&8&m                    ")
+                .build());
+        }
+
+        // ── Nhan Thuc Tinh o giua divider ─────────────────────────────────────
+        fill(22, new ItemBuilder(Material.NETHER_STAR)
+            .name("&6✦ Thuc Tinh &8(Sap ra mat)")
+            .lore(
+                "&7Mo khoa dang nang cap tiem an cua class.",
+                "",
+                "&8Tinh nang nay se duoc mo khoa trong tuong lai.",
+                "&8Hay tich luy suc manh de chuan bi."
+            ).build());
+
+        // ── 4 Slot Thuc Tinh — locked, 1 cho moi class (hang 4-5) ────────────
+        int[] awakenSlots  = {28, 31, 34, 37}; // tuong ung voi WARRIOR MAGE ARCHER ROGUE
+        String[] awakenNames = {
+            "&c⚔ Thuc Tinh Chien Si",
+            "&9✦ Thuc Tinh Phap Su",
+            "&a➶ Thuc Tinh Xa Thu",
+            "&5✦ Thuc Tinh Am Sat"
+        };
+        Material[] awakenMats = {
+            Material.NETHERITE_SWORD,
+            Material.END_CRYSTAL,
+            Material.BOW,
+            Material.PHANTOM_MEMBRANE
+        };
+        String[][] awakenLore = {
+            {
+                "&7Chien si bat thanh Than Chien.",
+                "&7Nang cap: &cSuc manh thuan tuy, khong co gioi han.",
+                "",
+                "&7Yeu cau: &8[Chua xac dinh]",
+                "&8&oSap ra mat trong Phase 3..."
+            },
+            {
+                "&7Phap su bat thanh Phap Than.",
+                "&7Nang cap: &9Mana vo tan, phep thuat huy diet.",
+                "",
+                "&7Yeu cau: &8[Chua xac dinh]",
+                "&8&oSap ra mat trong Phase 3..."
+            },
+            {
+                "&7Xa thu bat thanh Than Xa.",
+                "&7Nang cap: &aToc do va chinh xac tuyet doi.",
+                "",
+                "&7Yeu cau: &8[Chua xac dinh]",
+                "&8&oSap ra mat trong Phase 3..."
+            },
+            {
+                "&7Am sat bat thanh Bong Toi.",
+                "&7Nang cap: &5An minh hoan hao, mot don chet nguoi.",
+                "",
+                "&7Yeu cau: &8[Chua xac dinh]",
+                "&8&oSap ra mat trong Phase 3..."
+            }
+        };
+
+        for (int i = 0; i < 4; i++) {
+            final PlayerClass pc = classes[i];
+            boolean isCurrentClass = pc == current;
+
+            ItemBuilder b = new ItemBuilder(awakenMats[i])
+                .name(awakenNames[i])
+                .lore(buildAwakenLore(awakenLore[i], isCurrentClass));
+
+            // Khong glow, khong click — chi la preview
+            setButton(awakenSlots[i], new GuiButton(b.build(), e -> {
+                Player player = (Player) e.getWhoClicked();
+                player.sendMessage(ColorUtil.color(
+                    "&6[Thuc Tinh] &7Tinh nang nay chua duoc mo khoa. Hay cho Phase 3!"));
+            }));
+        }
+
+        // ── Footer ────────────────────────────────────────────────────────────
+        fill(49, new ItemBuilder(Material.PAPER)
             .name("&7Huong dan")
             .lore(
                 "&7• Click de chon class",
                 firstTime ? "&a• Lan dau: MIEN PHI" :
                     (cost != null ? "&7• Can: &f" + cost.getAmount()
                         + "x " + cost.getType().name() : "&7• Mien phi"),
-                "&7• Skill tu dong cap nhat khi doi class"
+                "&7• Thuc Tinh se mo khoa trong tuong lai"
             ).build());
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ── Lore builders ─────────────────────────────────────────────────────────
 
-    private List<String> buildLore(ClassData cd, boolean isActive,
-                                    boolean firstTime, boolean canAfford,
-                                    ItemStack cost) {
+    private List<String> buildClassLore(ClassData cd, boolean isActive,
+                                         boolean firstTime, boolean canAfford,
+                                         ItemStack cost) {
         List<String> lore = new ArrayList<>();
         lore.add(ColorUtil.color("&7" + cd.getDescription()));
         lore.add("");
@@ -157,6 +237,19 @@ public class ClassSelectGui extends ElysiumGui {
         }
         return lore;
     }
+
+    private List<String> buildAwakenLore(String[] lines, boolean isCurrentClass) {
+        List<String> lore = new ArrayList<>();
+        for (String line : lines) lore.add(ColorUtil.color(line));
+        lore.add("");
+        lore.add(isCurrentClass
+            ? ColorUtil.color("&e⚡ Day la Thuc Tinh cua class ban dang dung")
+            : ColorUtil.color("&8Khong phai class hien tai cua ban"));
+        lore.add(ColorUtil.color("&c🔒 Chua mo khoa"));
+        return lore;
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private String getDisplayName(PlayerClass pc) {
         ClassData cd = combat.getClassManager().getClassData(pc);
