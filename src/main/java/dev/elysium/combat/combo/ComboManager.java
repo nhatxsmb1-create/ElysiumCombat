@@ -94,11 +94,12 @@ public class ComboManager {
     private String buildComboBar(Player player, int combo) {
         PlayerClass pc = plugin.getClassManager().getPlayerClass(player.getUniqueId());
         String color = switch (pc) {
-            case WARRIOR -> "&c";
-            case MAGE    -> "&9";
-            case ARCHER  -> "&a";
-            case ROGUE   -> "&5";
-            default      -> "&f";
+            case WARRIOR  -> "&c";
+            case MAGE     -> "&9";
+            case RANGER   -> "&a";
+            case ASSASSIN -> "&5";
+            case SUPPORT  -> "&e";
+            default       -> "&f";
         };
 
         // Tao thanh combo: ▮▮▮▯▯▯▯▯▯▯

@@ -39,17 +39,23 @@ public class HitParticleManager {
                 world.spawnParticle(Particle.WITCH, loc, 5, 0.2, 0.2, 0.2, 0.05);
                 world.playSound(loc, Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 1.6f);
             }
-            case ARCHER -> {
+            case RANGER -> {
                 // Xanh la tu nhien
                 world.spawnParticle(Particle.HAPPY_VILLAGER, loc, 8, 0.3, 0.3, 0.3, 0);
                 world.spawnParticle(Particle.CRIT, loc, 5, 0.2, 0.2, 0.2, 0.1);
                 world.playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.3f);
             }
-            case ROGUE -> {
+            case ASSASSIN -> {
                 // Tim - bong toi, sat thuong nhanh
                 world.spawnParticle(Particle.PORTAL, loc, 12, 0.2, 0.3, 0.2, 0.3);
                 world.spawnParticle(Particle.SMOKE, loc, 4, 0.1, 0.2, 0.1, 0.05);
                 world.playSound(loc, Sound.ENTITY_ENDERMAN_TELEPORT, 0.3f, 2.0f);
+            }
+            case SUPPORT -> {
+                // Vang chanh - anh sang bao ve
+                world.spawnParticle(Particle.END_ROD, loc, 6, 0.2, 0.2, 0.2, 0.05);
+                world.spawnParticle(Particle.GLOW, loc, 5, 0.3, 0.3, 0.3, 0.1);
+                world.playSound(loc, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.4f, 1.2f);
             }
             default -> {
                 // Khong co class: hit binh thuong
