@@ -28,6 +28,7 @@ public class ElysiumCombat extends JavaPlugin {
     private KillNotifyManager  killNotifyManager;
     private dev.elysium.combat.indicator.DamageIndicatorManager damageIndicatorManager;
     private dev.elysium.combat.skill.PassiveManager passiveManager;
+    private dev.elysium.combat.hud.ActionBarHUDManager actionBarManager;
 
     @Override
     public void onEnable() {
@@ -48,6 +49,7 @@ public class ElysiumCombat extends JavaPlugin {
         
         damageIndicatorManager = new dev.elysium.combat.indicator.DamageIndicatorManager(this);
         passiveManager = new dev.elysium.combat.skill.PassiveManager(this);
+        actionBarManager = new dev.elysium.combat.hud.ActionBarHUDManager(this);
 
         CombatAPI.init(this);
 
@@ -102,4 +104,5 @@ public class ElysiumCombat extends JavaPlugin {
     public KillNotifyManager  getKillNotifyManager() { return killNotifyManager; }
     public dev.elysium.combat.indicator.DamageIndicatorManager getDamageIndicatorManager() { return damageIndicatorManager; }
     public dev.elysium.combat.skill.PassiveManager getPassiveManager() { return passiveManager; }
+    public dev.elysium.combat.hud.ActionBarHUDManager getActionBarManager() { return actionBarManager; }
 }

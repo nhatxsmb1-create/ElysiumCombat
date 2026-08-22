@@ -68,7 +68,9 @@ public class PassiveManager {
                     // 20% gây độc
                     victim.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
                     attacker.playSound(attacker.getLocation(), Sound.ENTITY_SPIDER_AMBIENT, 0.5f, 1.5f);
-                    attacker.sendActionBar(ColorUtil.component("&a&l[Nội Tại] &fĐộc Tố Kích Hoạt!"));
+                    if (plugin.getActionBarManager() != null) {
+                        plugin.getActionBarManager().sendTemporaryMessage(attacker, "&a&l[Nội Tại] &fĐộc Tố Kích Hoạt!", 40);
+                    }
                 }
                 break;
             case ASSASSIN:
@@ -81,7 +83,9 @@ public class PassiveManager {
                     multiplier = 1.5;
                     attacker.playSound(attacker.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.2f);
                     victim.getWorld().spawnParticle(Particle.ENCHANTED_HIT, victim.getLocation().add(0, 1, 0), 15, 0.5, 0.5, 0.5, 0.1);
-                    attacker.sendActionBar(ColorUtil.component("&5&l[Nội Tại] &fĐâm Lén Chí Mạng (x1.5)!"));
+                    if (plugin.getActionBarManager() != null) {
+                        plugin.getActionBarManager().sendTemporaryMessage(attacker, "&5&l[Nội Tại] &fĐâm Lén Chí Mạng (x1.5)!", 40);
+                    }
                 }
                 break;
             default:
@@ -103,7 +107,9 @@ public class PassiveManager {
                     if (!victim.hasPotionEffect(PotionEffectType.RESISTANCE)) {
                         victim.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 1)); // 5s Res II
                         victim.playSound(victim.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1.0f, 0.8f);
-                        victim.sendActionBar(ColorUtil.component("&c&l[Nội Tại] &fHuyết Loạn Kích Hoạt!"));
+                        if (plugin.getActionBarManager() != null) {
+                            plugin.getActionBarManager().sendTemporaryMessage(victim, "&c&l[Nội Tại] &fHuyết Loạn Kích Hoạt!", 40);
+                        }
                     }
                 }
                 break;

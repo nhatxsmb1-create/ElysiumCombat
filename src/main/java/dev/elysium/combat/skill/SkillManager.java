@@ -153,7 +153,9 @@ public class SkillManager {
         // Chi kiem tra cooldown
         if (CoreAPI.getCore().getCooldownManager().has(player.getUniqueId(), cdKey)) {
             long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
-            player.sendActionBar(ColorUtil.component("&c&l⏳ Chưa sẵn sàng! &e" + rem + "s"));
+            if (plugin.getActionBarManager() != null) {
+                plugin.getActionBarManager().sendTemporaryMessage(player, "&c&l⏳ Chưa sẵn sàng! &e" + rem + "s", 40);
+            }
             return;
         }
 
@@ -163,7 +165,9 @@ public class SkillManager {
 
         executeEffect(player, skill);
 
-        player.sendActionBar(ColorUtil.component(skill.getIcon() + " &e&l" + skill.getName() + " &ađã kích hoạt!"));
+        if (plugin.getActionBarManager() != null) {
+            plugin.getActionBarManager().sendTemporaryMessage(player, skill.getIcon() + " &e&l" + skill.getName() + " &ađã kích hoạt!", 40);
+        }
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
         player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().add(0,1,0), 10);
 

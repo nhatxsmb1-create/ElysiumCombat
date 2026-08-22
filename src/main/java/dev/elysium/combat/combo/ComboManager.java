@@ -52,8 +52,7 @@ public class ComboManager {
 
         // Hien thi action bar neu combo >= 2
         if (current >= 2) {
-            String bar = buildComboBar(player, current);
-            player.sendActionBar(ColorUtil.component(bar));
+            // HUD Manager se tu dong hien thi Combo bar
             
             // Hieu ung am thanh tang dan (Pitch shift)
             float pitch = 0.5f + (current * 0.15f);
@@ -74,8 +73,8 @@ public class ComboManager {
 
         if (old >= 3) {
             Player p = plugin.getServer().getPlayer(uuid);
-            if (p != null && p.isOnline()) {
-                p.sendActionBar(ColorUtil.component("&7Combo &f" + old + "x &7ket thuc."));
+            if (p != null && p.isOnline() && plugin.getActionBarManager() != null) {
+                plugin.getActionBarManager().sendTemporaryMessage(p, "&7Combo &f" + old + "x &7kết thúc.", 30);
             }
         }
     }
@@ -96,7 +95,7 @@ public class ComboManager {
         if (old != null) old.cancel();
     }
 
-    private String buildComboBar(Player player, int combo) {
+    public String buildComboBar(Player player, int combo) {
         PlayerClass pc = plugin.getClassManager().getPlayerClass(player.getUniqueId());
         String color = switch (pc) {
             case WARRIOR  -> "&c";

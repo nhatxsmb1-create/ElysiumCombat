@@ -97,10 +97,12 @@ public class KillNotifyManager {
         }
 
         // ── Thong bao rieng cho killer ─────────────────────────────────────
-        killer.sendActionBar(ColorUtil.component(
-            "&a+1 Kill &8| &eStreak: &f" + streak +
-            (streak >= 3 ? " &6(" + getStreakTitle(streak) + ")" : "")
-        ));
+        if (plugin.getActionBarManager() != null) {
+            plugin.getActionBarManager().sendTemporaryMessage(killer, 
+                "&a+1 Kill &8| &eStreak: &f" + streak +
+                (streak >= 3 ? " &6(" + getStreakTitle(streak) + ")" : ""), 
+                60);
+        }
     }
 
     /**
