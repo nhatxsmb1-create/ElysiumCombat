@@ -93,17 +93,26 @@ public class SkillManager {
         long rem  = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
         boolean onCd = rem > 0;
 
-        meta.setDisplayName(ColorUtil.color(skill.getIcon() + " &f" + skill.getName()));
+        meta.setDisplayName(ColorUtil.color(skill.getIcon() + " " + skill.getName()));
 
         List<String> lore = new ArrayList<>();
+        lore.add(ColorUtil.color("&8&m                     "));
+        
+        // Word wrap description manually or keep it as is (assuming short descriptions)
         lore.add(ColorUtil.color("&7" + skill.getDescription()));
+        
         lore.add("");
-        lore.add(ColorUtil.color("&7Cooldown: &f" + skill.getCooldownSeconds() + "s"));
-        lore.add("");
-        lore.add(onCd
-            ? ColorUtil.color("&c⏳ Hoi chieu: &e" + rem + "s")
-            : ColorUtil.color("&a✔ San sang"));
-        lore.add(ColorUtil.color("&8Chuot phai de dung"));
+        lore.add(ColorUtil.color("&f&lTHÔNG TIN:"));
+        lore.add(ColorUtil.color("  &8▪ &7Hồi chiêu: &e" + skill.getCooldownSeconds() + "s"));
+        lore.add(ColorUtil.color("  &8▪ &7Năng lượng: &b" + (skill.getManaCost() > 0 ? skill.getManaCost() : "Không tốn")));
+        lore.add(ColorUtil.color("&8&m                     "));
+        
+        if (onCd) {
+            lore.add(ColorUtil.color("&c&l⏳ ĐANG HỒI CHIÊU &8(&e" + rem + "s&8)"));
+        } else {
+            lore.add(ColorUtil.color("&a&l✔ SẴN SÀNG"));
+            lore.add(ColorUtil.color("&eClick Chuột Phải &7để kích hoạt!"));
+        }
 
         meta.setLore(lore);
         meta.setCustomModelData(2000 + slot);
@@ -144,7 +153,7 @@ public class SkillManager {
         // Chi kiem tra cooldown
         if (CoreAPI.getCore().getCooldownManager().has(player.getUniqueId(), cdKey)) {
             long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
-            player.sendActionBar(ColorUtil.component("&c" + skill.getName() + " &7hoi chieu! &e" + rem + "s"));
+            player.sendActionBar(ColorUtil.component("&c&l⏳ Chưa sẵn sàng! &e" + rem + "s"));
             return;
         }
 
@@ -154,7 +163,7 @@ public class SkillManager {
 
         executeEffect(player, skill);
 
-        player.sendActionBar(ColorUtil.component(skill.getIcon() + " &e" + skill.getName() + " &7kich hoat!"));
+        player.sendActionBar(ColorUtil.component(skill.getIcon() + " &e&l" + skill.getName() + " &ađã kích hoạt!"));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
         player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().add(0,1,0), 10);
 

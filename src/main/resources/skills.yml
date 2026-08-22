@@ -1,12 +1,12 @@
-# Skill chi con cooldown, khong ton mana
-# effect: BUFF_POTION | RESTORE_MANA | HEAL | DASH
+# Hệ thống kỹ năng VIP PRO (Không tốn Mana, chỉ có Cooldown)
+# Hiệu ứng hỗ trợ: BUFF_POTION | RESTORE_MANA | HEAL | DASH
 
 skills:
   WARRIOR:
     skill1:
-      name: "Thiet Giap"
-      description: "Tang khang sat thuong trong 8 giay"
-      icon: "&c"
+      name: "&c&lHuyết Giáp Cổ Ngữ"
+      description: "Gồng mình chịu đựng, tăng tối đa khả năng chống chịu trong 8 giây."
+      icon: "&c🛡"
       mana-cost: 0
       cooldown: 15
       effect: BUFF_POTION
@@ -14,9 +14,9 @@ skills:
       potion-amplifier: 1
       duration: 160
     skill2:
-      name: "Hung Khi"
-      description: "Tang suc manh danh trong 8 giay"
-      icon: "&c"
+      name: "&4&lCuồng Bạo Chi Thần"
+      description: "Kích phát sức mạnh tiềm ẩn, tăng mạnh sát thương cận chiến."
+      icon: "&4⚔"
       mana-cost: 0
       cooldown: 20
       effect: BUFF_POTION
@@ -24,9 +24,9 @@ skills:
       potion-amplifier: 1
       duration: 160
     skill3:
-      name: "Tai Sinh"
-      description: "Hoi phuc 8 HP va Regeneration 5 giay"
-      icon: "&c"
+      name: "&a&lSinh Lực Bất Diệt"
+      description: "Khôi phục sinh lực mạnh mẽ, liên tục hồi máu trong 5 giây."
+      icon: "&a❤"
       mana-cost: 0
       cooldown: 60
       effect: HEAL
@@ -36,17 +36,17 @@ skills:
 
   MAGE:
     skill1:
-      name: "Bao Mana"
-      description: "Hoi phuc 60 Mana ngay lap tuc"
-      icon: "&9"
+      name: "&b&lKhởi Nguồn Ma Lực"
+      description: "Hấp thụ năng lượng tự nhiên, hồi ngay 60 Mana."
+      icon: "&b✦"
       mana-cost: 0
       cooldown: 20
       effect: RESTORE_MANA
       mana-restore: 60
     skill2:
-      name: "Man Phep"
-      description: "Khang lua va sat thuong trong 12 giay"
-      icon: "&9"
+      name: "&6&lMàng Lưới Nguyên Tố"
+      description: "Tạo khiên bảo vệ khỏi lửa và giảm sát thương trong 12 giây."
+      icon: "&6♨"
       mana-cost: 0
       cooldown: 25
       effect: BUFF_POTION
@@ -57,9 +57,9 @@ skills:
       extra-potion-amplifier: 0
       extra-duration: 240
     skill3:
-      name: "Khuech Dai"
-      description: "Tang toc do danh va di chuyen 10 giay"
-      icon: "&9"
+      name: "&d&lGia Tốc Không Gian"
+      description: "Bẻ cong thời gian, tăng tốc độ đánh và di chuyển."
+      icon: "&d⌛"
       mana-cost: 0
       cooldown: 60
       effect: BUFF_POTION
@@ -70,11 +70,11 @@ skills:
       extra-potion-amplifier: 1
       extra-duration: 200
 
-  ARCHER:
+  RANGER:
     skill1:
-      name: "Buoc Gio"
-      description: "Tang toc do di chuyen manh 6 giay"
-      icon: "&a"
+      name: "&a&lThần Hành Bách Biến"
+      description: "Di chuyển linh hoạt tựa như cơn gió trong 6 giây."
+      icon: "&a༄"
       mana-cost: 0
       cooldown: 12
       effect: BUFF_POTION
@@ -82,9 +82,9 @@ skills:
       potion-amplifier: 2
       duration: 120
     skill2:
-      name: "Mat Dai Bang"
-      description: "Tang tam nhin ban dem 15 giay"
-      icon: "&a"
+      name: "&e&lNhãn Lực Chim Ưng"
+      description: "Cường hóa thị giác, nhìn thấu màn đêm."
+      icon: "&e👁"
       mana-cost: 0
       cooldown: 20
       effect: BUFF_POTION
@@ -92,21 +92,19 @@ skills:
       potion-amplifier: 0
       duration: 300
     skill3:
-      name: "Phan Xa"
-      description: "Tang khang sat thuong manh 8 giay"
-      icon: "&a"
+      name: "&f&lLùi Bước Phản Công"
+      description: "Phi thân lướt đi với tốc độ cao để giữ khoảng cách."
+      icon: "&f💨"
       mana-cost: 0
-      cooldown: 60
-      effect: BUFF_POTION
-      potion-type: RESISTANCE
-      potion-amplifier: 2
-      duration: 160
+      cooldown: 15
+      effect: DASH
+      dash-distance: 5.0
 
-  ROGUE:
+  ASSASSIN:
     skill1:
-      name: "Tang Hinh"
-      description: "An hien trong 5 giay"
-      icon: "&e"
+      name: "&8&lMàn Đêm Che Phủ"
+      description: "Hòa mình vào bóng tối, tàng hình hoàn toàn trong 5 giây."
+      icon: "&8☾"
       mana-cost: 0
       cooldown: 20
       effect: BUFF_POTION
@@ -114,9 +112,9 @@ skills:
       potion-amplifier: 0
       duration: 100
     skill2:
-      name: "Bong Toi"
-      description: "Tang suc manh va toc do 6 giay"
-      icon: "&e"
+      name: "&5&lSát Ý Tối Thượng"
+      description: "Bộc phát sát ý, tăng sát thương và tốc độ trong 6 giây."
+      icon: "&5☠"
       mana-cost: 0
       cooldown: 25
       effect: BUFF_POTION
@@ -127,10 +125,40 @@ skills:
       extra-potion-amplifier: 1
       extra-duration: 120
     skill3:
-      name: "Phong Than"
-      description: "Lang xe nhanh ve phia truoc 8 block"
-      icon: "&e"
+      name: "&7&lThuấn Di Ám Sát"
+      description: "Lao nhanh tới mục tiêu ở khoảng cách cực xa."
+      icon: "&7⚡"
       mana-cost: 0
-      cooldown: 10
+      cooldown: 12
       effect: DASH
       dash-distance: 8.0
+
+  SUPPORT:
+    skill1:
+      name: "&e&lPhước Lành Ánh Sáng"
+      description: "Gọi sức mạnh ánh sáng để phục hồi sinh lực mạnh mẽ."
+      icon: "&e✚"
+      mana-cost: 0
+      cooldown: 25
+      effect: HEAL
+      heal-amount: 10.0
+      regen-duration: 100
+      regen-amplifier: 0
+    skill2:
+      name: "&6&lHào Quang Hộ Thể"
+      description: "Tạo một lớp giáp sinh lực ảo bảo vệ bản thân."
+      icon: "&6⛨"
+      mana-cost: 0
+      cooldown: 30
+      effect: BUFF_POTION
+      potion-type: ABSORPTION
+      potion-amplifier: 1
+      duration: 200
+    skill3:
+      name: "&b&lThánh Ca Hồi Năng"
+      description: "Thanh tẩy mệt mỏi, hồi phục 100 Mana ngay lập tức."
+      icon: "&b♪"
+      mana-cost: 0
+      cooldown: 40
+      effect: RESTORE_MANA
+      mana-restore: 100

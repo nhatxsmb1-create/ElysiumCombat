@@ -1,65 +1,80 @@
 classes:
   WARRIOR:
-    display-name: "&c⚔ Chien Binh"
-    description: "Manh me, bat khuat, bao ve dong doi"
-    item: IRON_SWORD
-    # Chi phi doi class (lan dau chon MIEN PHI)
-    change-cost:
-      - material: IRON_INGOT
-        amount: 16
+    display-name: "&c&l⚔ Chiến Binh"
+    description: "Bậc thầy cận chiến, chống chịu tốt và sinh tồn mạnh mẽ."
+    item: NETHERITE_SWORD
+    optimized-weapons:
+      - "&fĐại Kiếm"
+      - "&fHoa Kiếm"
+      - "&fĐại Phủ"
     stats:
-      bonus-hp: 10.0
+      bonus-hp: 20.0
       bonus-damage: 2.0
-      defense: 15
-      speed-modifier: -0.005
+      defense: 25
+      speed-modifier: -0.01
       mana-regen: 2
-      max-mana-bonus: -30
+      max-mana-bonus: -20
 
   MAGE:
-    display-name: "&9✦ Phap Su"
-    description: "Phep thuat toi thuong, tri tue vo bien"
-    item: BLAZE_ROD
-    change-cost:
-      - material: BLAZE_ROD
-        amount: 8
-      - material: GOLD_INGOT
-        amount: 8
+    display-name: "&9&l✦ Pháp Sư"
+    description: "Điều khiển năng lượng vô tận, tung đòn phép thuật diện rộng."
+    item: END_CRYSTAL
+    optimized-weapons:
+      - "&fTrượng Phép"
+      - "&fOrb Năng Lượng"
+      - "&fSách Ma Thuật"
     stats:
-      bonus-hp: -4.0
-      bonus-damage: 0.5
+      bonus-hp: -6.0
+      bonus-damage: 1.0
       defense: 5
       speed-modifier: 0.0
-      mana-regen: 10
-      max-mana-bonus: 100
+      mana-regen: 15
+      max-mana-bonus: 150
 
-  ARCHER:
-    display-name: "&a🏹 Cung Thu"
-    description: "Chuan xac, nhanh nhen, tan cong tu xa"
+  RANGER:
+    display-name: "&a&l🏹 Xạ Thủ"
+    description: "Chuyên gia đánh xa, cơ động và chính xác tuyệt đối."
     item: BOW
-    change-cost:
-      - material: ARROW
-        amount: 32
-      - material: FEATHER
-        amount: 8
+    optimized-weapons:
+      - "&fCung Dài"
+      - "&fNỏ Liên Châu"
+      - "&fSong Súng"
     stats:
-      bonus-hp: 0.0
-      bonus-damage: 1.5
-      defense: 5
-      speed-modifier: 0.02
-      mana-regen: 4
+      bonus-hp: -2.0
+      bonus-damage: 3.0
+      defense: 10
+      speed-modifier: 0.03
+      mana-regen: 5
+      max-mana-bonus: 20
+
+  ASSASSIN:
+    display-name: "&5&l🗡 Thích Khách"
+    description: "Ẩn mình trong bóng tối, một đòn chí mạng kết liễu kẻ thù."
+    item: PHANTOM_MEMBRANE
+    optimized-weapons:
+      - "&fDao Găm"
+      - "&fSong Kiếm"
+      - "&fKatana"
+    stats:
+      bonus-hp: -8.0
+      bonus-damage: 5.0
+      defense: 0
+      speed-modifier: 0.05
+      mana-regen: 8
       max-mana-bonus: 0
 
-  ROGUE:
-    display-name: "&e🗡 Thich Khach"
-    description: "Bi an, nguy hiem, dam phat crit cao"
-    item: STONE_SWORD
-    change-cost:
-      - material: EMERALD
-        amount: 8
+  SUPPORT:
+    display-name: "&e&l🛡 Hỗ Trợ"
+    description: "Trái tim của đội hình, cung cấp buff và hiệu ứng khống chế."
+    item: TOTEM_OF_UNDYING
+    optimized-weapons:
+      - "&fKhiên Thánh"
+      - "&fCờ Lệnh"
+      - "&fNhẫn Hỗ Trợ"
     stats:
-      bonus-hp: -4.0
-      bonus-damage: 3.0
-      defense: 0
-      speed-modifier: 0.04
-      mana-regen: 3
-      max-mana-bonus: -20
+      bonus-hp: 10.0
+      bonus-damage: -2.0
+      defense: 15
+      speed-modifier: 0.01
+      mana-regen: 10
+      max-mana-bonus: 50

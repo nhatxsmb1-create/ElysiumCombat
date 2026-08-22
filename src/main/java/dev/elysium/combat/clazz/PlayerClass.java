@@ -8,6 +8,7 @@ public enum PlayerClass {
     NONE,
     WARRIOR,
     MAGE,
-    ARCHER,
-    ROGUE
+    RANGER,
+    ASSASSIN,
+    SUPPORT
 }

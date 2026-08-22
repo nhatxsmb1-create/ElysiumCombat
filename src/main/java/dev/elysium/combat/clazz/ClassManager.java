@@ -33,11 +33,17 @@ public class ClassManager {
                 PlayerClass pc = PlayerClass.valueOf(key.toUpperCase());
                 ConfigurationSection s  = root.getConfigurationSection(key);
                 ConfigurationSection st = s.getConfigurationSection("stats");
+                
+                // Parse optimized weapons
+                List<String> optimizedWeapons = s.getStringList("optimized-weapons");
+                if (optimizedWeapons == null) optimizedWeapons = new ArrayList<>();
+
                 classes.put(pc, new ClassData(key,
                     ColorUtil.color(s.getString("display-name",key)),
                     s.getString("description",""),
                     s.getString("item","STONE_SWORD"),
-                    st != null ? st.getDouble("bonus-hp",0)      : 0,
+                    optimizedWeapons,
+                    st != null ? st.getDouble("bonus-hp",0)       : 0,
                     st != null ? st.getDouble("bonus-damage",0)   : 0,
                     st != null ? st.getInt("defense",0)           : 0,
                     st != null ? st.getDouble("speed-modifier",0) : 0,

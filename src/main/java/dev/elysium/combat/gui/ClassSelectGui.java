@@ -24,34 +24,37 @@ public class ClassSelectGui extends ElysiumGui {
     private final ElysiumCombat combat;
 
     public ClassSelectGui(ElysiumCombat combat) {
-        super("&c⚔ Chon Class", 54);  // Mo rong len 54 (6 hang) de co hang Thuc Tinh
+        super("&8&l» &c&lCHỌN LỚP NHÂN VẬT", 54);
         this.combat = combat;
     }
 
     @Override
     public void build(Player viewer) {
-        fill(ItemBuilder.filler());
+        fill(new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).name(" ").build());
 
         PlayerClass current = combat.getClassManager().getPlayerClass(viewer.getUniqueId());
         boolean firstTime   = current == PlayerClass.NONE;
-        ItemStack cost      = getChangeCost();
 
         // ── Header ────────────────────────────────────────────────────────────
-        fill(4, new ItemBuilder(Material.BOOK)
-            .name("&c⚔ Chon Class")
+        fill(4, new ItemBuilder(Material.NETHER_STAR)
+            .name("&e&lHỆ THỐNG CLASS")
             .lore(
-                firstTime ? "&aChua co class — LAN DAU MIEN PHI!" : "&7Dang dung: " + getDisplayName(current),
+                "&7Chọn Class để tối ưu hóa vũ khí của bạn.",
+                "&7Mỗi Class sẽ có phong cách chiến đấu riêng biệt.",
                 "",
-                firstTime ? "&7Chon class de bat dau!" : (cost != null
-                    ? "&7Doi class ton: &f" + cost.getAmount() + "x " + cost.getType().name()
-                    : "&7Doi class mien phi")
+                firstTime ? "&a✔ Lần chọn đầu tiên hoàn toàn MIỄN PHÍ!" : "&7Bạn đang là: " + getDisplayName(current)
             ).build());
 
-        // ── 4 Class (hang 2, slot 10 12 14 16) ───────────────────────────────
-        int[] classSlots = {10, 12, 14, 16};
+        // Lấy vật phẩm đổi class từ config chung
+        ItemStack globalCost = combat.getCombatConfig().getChangeClassItem();
+        boolean hasGlobalCost = firstTime || hasCost(viewer, globalCost);
+
+        // ── 5 Class (hang 2, slot 11 12 13 14 15) ───────────────────────────────
+        int[] classSlots = {11, 12, 13, 14, 15};
         PlayerClass[] classes = {
             PlayerClass.WARRIOR, PlayerClass.MAGE,
-            PlayerClass.ARCHER,  PlayerClass.ROGUE
+            PlayerClass.RANGER,  PlayerClass.ASSASSIN,
+            PlayerClass.SUPPORT
         };
 
         for (int i = 0; i < classes.length; i++) {
@@ -60,11 +63,10 @@ public class ClassSelectGui extends ElysiumGui {
             if (cd == null) continue;
 
             boolean isActive  = pc == current;
-            boolean canAfford = firstTime || hasCost(viewer, cost);
 
             ItemBuilder builder = new ItemBuilder(Material.valueOf(cd.getItem().toUpperCase()))
-                .name((isActive ? "&a✔ " : "") + cd.getDisplayName())
-                .lore(buildClassLore(cd, isActive, firstTime, canAfford, cost));
+                .name((isActive ? "&a&l✔ " : "") + cd.getDisplayName())
+                .lore(buildClassLore(cd, isActive, firstTime, hasGlobalCost, globalCost));
 
             if (isActive) builder.glow();
 
@@ -73,19 +75,14 @@ public class ClassSelectGui extends ElysiumGui {
                 Player player = (Player) e.getWhoClicked();
 
                 if (finalPc == combat.getClassManager().getPlayerClass(player.getUniqueId())) {
-                    player.sendMessage(ColorUtil.color("&7Ban dang dung class nay roi!"));
+                    player.sendMessage(ColorUtil.color("&cBạn đang sử dụng Class này rồi!"));
                     return;
                 }
 
-                boolean free       = combat.getClassManager()
-                    .getPlayerClass(player.getUniqueId()) == PlayerClass.NONE;
-                ItemStack changeCost = getChangeCost();
+                boolean free = combat.getClassManager().getPlayerClass(player.getUniqueId()) == PlayerClass.NONE;
 
-                if (!free && !hasCost(player, changeCost)) {
-                    player.sendMessage(ColorUtil.color("&cCan &f"
-                        + (changeCost != null ? changeCost.getAmount() + "x "
-                        + changeCost.getType().name() : "?")
-                        + " &cde doi class!"));
+                if (!free && !hasCost(player, globalCost)) {
+                    player.sendMessage(ColorUtil.color("&cBạn không có đủ &6✦ Huy Hiệu Chức Nghiệp &cđể đổi Class!"));
                     player.closeInventory();
                     return;
                 }
@@ -97,11 +94,11 @@ public class ClassSelectGui extends ElysiumGui {
                     player, ep, oldClass, finalPc.name());
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
-                    player.sendMessage(ColorUtil.color("&cKhong the doi class luc nay!"));
+                    player.sendMessage(ColorUtil.color("&cKhông thể đổi Class lúc này!"));
                     return;
                 }
 
-                if (!free) takeCost(player, changeCost);
+                if (!free) takeCost(player, globalCost);
 
                 if (ep != null) ep.setPlayerClass(finalPc.name());
                 combat.getClassManager().setPlayerClass(player.getUniqueId(), finalPc);
@@ -109,104 +106,84 @@ public class ClassSelectGui extends ElysiumGui {
                 combat.getClassManager().giveSkillItems(player);
                 CoreAPI.awardAchievement(player, AchievementType.CLASS_CHOSEN);
 
-                ClassData cd2 = combat.getClassManager().getClassData(finalPc);
-                player.sendMessage(ColorUtil.color(
-                    "&a[CLASS] Da chon: " + cd2.getDisplayName()));
+                player.sendMessage(ColorUtil.color("&aBạn đã trở thành " + cd.getDisplayName() + "&a!"));
                 player.closeInventory();
-
+                
                 combat.getServer().getScheduler().runTaskLater(combat, () ->
-                    CoreAPI.getCore().getGuiManager().open(
-                        player, new ClassSelectGui(combat)), 2L);
+                    CoreAPI.getCore().getGuiManager().open(player, new ClassSelectGui(combat)), 2L);
             }));
         }
 
         // ── Divider: hang 3 (slot 18-26) ─────────────────────────────────────
         for (int s = 18; s <= 26; s++) {
-            fill(s, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
-                .name("&8&m                    ")
-                .build());
+            fill(s, new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name(" ").build());
         }
-
-        // ── Nhan Thuc Tinh o giua divider ─────────────────────────────────────
-        fill(22, new ItemBuilder(Material.NETHER_STAR)
-            .name("&6✦ Thuc Tinh &8(Sap ra mat)")
+        
+        fill(22, new ItemBuilder(Material.END_CRYSTAL)
+            .name("&6&l✦ THỨC TỈNH &8(Phase 3)")
             .lore(
-                "&7Mo khoa dang nang cap tiem an cua class.",
+                "&7Mở khóa sức mạnh tiềm ẩn của Class.",
+                "&7Mỗi Class sẽ có một hướng Thức Tỉnh",
+                "&7với kỹ năng và hiệu ứng độc quyền.",
                 "",
-                "&8Tinh nang nay se duoc mo khoa trong tuong lai.",
-                "&8Hay tich luy suc manh de chuan bi."
+                "&eClick để xem trước tính năng!"
             ).build());
+            
+        setButton(22, new GuiButton(new ItemBuilder(Material.END_CRYSTAL)
+            .name("&6&l✦ THỨC TỈNH &8(Phase 3)")
+            .lore(
+                "&7Mở khóa sức mạnh tiềm ẩn của Class.",
+                "&7Mỗi Class sẽ có một hướng Thức Tỉnh",
+                "&7với kỹ năng và hiệu ứng độc quyền.",
+                "",
+                "&eClick để xem trước tính năng!"
+            ).build(), e -> {
+                Player player = (Player) e.getWhoClicked();
+                CoreAPI.getCore().getGuiManager().open(player, new AwakenGui(combat));
+            }));
 
-        // ── 4 Slot Thuc Tinh — locked, 1 cho moi class (hang 4-5) ────────────
-        int[] awakenSlots  = {28, 31, 34, 37}; // tuong ung voi WARRIOR MAGE ARCHER ROGUE
+        // ── 5 Slot Thuc Tinh (hang 4) ────────────────────────────
+        int[] awakenSlots  = {29, 30, 31, 32, 33};
         String[] awakenNames = {
-            "&c⚔ Thuc Tinh Chien Si",
-            "&9✦ Thuc Tinh Phap Su",
-            "&a➶ Thuc Tinh Xa Thu",
-            "&5✦ Thuc Tinh Am Sat"
+            "&c&l⚔ Thức Tỉnh Thần Chiến",
+            "&9&l✦ Thức Tỉnh Pháp Thần",
+            "&a&l➶ Thức Tỉnh Thần Xạ",
+            "&5&l✦ Thức Tỉnh Bóng Tối",
+            "&e&l🛡 Thức Tỉnh Hộ Vệ"
         };
         Material[] awakenMats = {
-            Material.NETHERITE_SWORD,
-            Material.END_CRYSTAL,
-            Material.BOW,
-            Material.PHANTOM_MEMBRANE
-        };
-        String[][] awakenLore = {
-            {
-                "&7Chien si bat thanh Than Chien.",
-                "&7Nang cap: &cSuc manh thuan tuy, khong co gioi han.",
-                "",
-                "&7Yeu cau: &8[Chua xac dinh]",
-                "&8&oSap ra mat trong Phase 3..."
-            },
-            {
-                "&7Phap su bat thanh Phap Than.",
-                "&7Nang cap: &9Mana vo tan, phep thuat huy diet.",
-                "",
-                "&7Yeu cau: &8[Chua xac dinh]",
-                "&8&oSap ra mat trong Phase 3..."
-            },
-            {
-                "&7Xa thu bat thanh Than Xa.",
-                "&7Nang cap: &aToc do va chinh xac tuyet doi.",
-                "",
-                "&7Yeu cau: &8[Chua xac dinh]",
-                "&8&oSap ra mat trong Phase 3..."
-            },
-            {
-                "&7Am sat bat thanh Bong Toi.",
-                "&7Nang cap: &5An minh hoan hao, mot don chet nguoi.",
-                "",
-                "&7Yeu cau: &8[Chua xac dinh]",
-                "&8&oSap ra mat trong Phase 3..."
-            }
+            Material.NETHERITE_SWORD, Material.END_CRYSTAL,
+            Material.BOW, Material.PHANTOM_MEMBRANE,
+            Material.TOTEM_OF_UNDYING
         };
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             final PlayerClass pc = classes[i];
             boolean isCurrentClass = pc == current;
 
             ItemBuilder b = new ItemBuilder(awakenMats[i])
                 .name(awakenNames[i])
-                .lore(buildAwakenLore(awakenLore[i], isCurrentClass));
+                .lore(
+                    "",
+                    isCurrentClass ? "&e⚡ Đây là Thức Tỉnh của Class hiện tại" : "&8Đây không phải Class hiện tại của bạn",
+                    "&eClick để xem trước tính năng!",
+                    "&c🔒 Chưa mở khóa"
+                );
 
-            // Khong glow, khong click — chi la preview
             setButton(awakenSlots[i], new GuiButton(b.build(), e -> {
                 Player player = (Player) e.getWhoClicked();
-                player.sendMessage(ColorUtil.color(
-                    "&6[Thuc Tinh] &7Tinh nang nay chua duoc mo khoa. Hay cho Phase 3!"));
+                CoreAPI.getCore().getGuiManager().open(player, new AwakenGui(combat));
             }));
         }
 
         // ── Footer ────────────────────────────────────────────────────────────
         fill(49, new ItemBuilder(Material.PAPER)
-            .name("&7Huong dan")
+            .name("&f&lHướng Dẫn")
             .lore(
-                "&7• Click de chon class",
-                firstTime ? "&a• Lan dau: MIEN PHI" :
-                    (cost != null ? "&7• Can: &f" + cost.getAmount()
-                        + "x " + cost.getType().name() : "&7• Mien phi"),
-                "&7• Thuc Tinh se mo khoa trong tuong lai"
+                "&7• Click vào biểu tượng Class để chọn.",
+                "&7• Lần đầu tiên chọn Class được &aMiễn phí&7.",
+                "&7• Các lần đổi sau cần &6✦ Huy Hiệu Chức Nghiệp&7.",
+                "&7• Thức Tỉnh sẽ ra mắt trong Phase 3."
             ).build());
     }
 
@@ -218,34 +195,30 @@ public class ClassSelectGui extends ElysiumGui {
         List<String> lore = new ArrayList<>();
         lore.add(ColorUtil.color("&7" + cd.getDescription()));
         lore.add("");
-        lore.add(ColorUtil.color("&7HP: &c+" + cd.getBonusHp()
-            + "  &7Damage: &c+" + cd.getBonusDamage()));
-        lore.add(ColorUtil.color("&7Defense: &a" + cd.getDefense()
-            + "%  &7Mana: &b+" + cd.getManaRegen() + "/2s"));
-        lore.add("");
-        if (isActive) {
-            lore.add(ColorUtil.color("&a✔ Dang su dung"));
-        } else if (firstTime || cost == null) {
-            lore.add(ColorUtil.color("&a✦ Mien phi (lan dau)"));
-            lore.add(ColorUtil.color("&eClick de chon!"));
-        } else {
-            lore.add(ColorUtil.color("&7Can: &f"
-                + cost.getAmount() + "x " + cost.getType().name()));
-            lore.add(canAfford
-                ? ColorUtil.color("&eClick de chon!")
-                : ColorUtil.color("&cKhong du item!"));
+        
+        lore.add(ColorUtil.color("&6&l► Vũ Khí Tối Ưu:"));
+        for (String w : cd.getOptimizedWeapons()) {
+            lore.add(ColorUtil.color("  &8▪ " + w));
         }
-        return lore;
-    }
-
-    private List<String> buildAwakenLore(String[] lines, boolean isCurrentClass) {
-        List<String> lore = new ArrayList<>();
-        for (String line : lines) lore.add(ColorUtil.color(line));
         lore.add("");
-        lore.add(isCurrentClass
-            ? ColorUtil.color("&e⚡ Day la Thuc Tinh cua class ban dang dung")
-            : ColorUtil.color("&8Khong phai class hien tai cua ban"));
-        lore.add(ColorUtil.color("&c🔒 Chua mo khoa"));
+
+        if (isActive) {
+            lore.add(ColorUtil.color("&a&l✔ BẠN ĐANG SỬ DỤNG CLASS NÀY"));
+        } else if (firstTime) {
+            lore.add(ColorUtil.color("&a&l✦ MIỄN PHÍ (LẦN ĐẦU)"));
+            lore.add(ColorUtil.color("&eClick để chọn!"));
+        } else {
+            lore.add(ColorUtil.color("&c&l► CHI PHÍ ĐỔI CLASS:"));
+            if (cost != null && cost.hasItemMeta() && cost.getItemMeta().hasDisplayName()) {
+                lore.add(ColorUtil.color("  &8▪ &f" + cost.getAmount() + "x " + cost.getItemMeta().getDisplayName()));
+            } else if (cost != null) {
+                lore.add(ColorUtil.color("  &8▪ &f" + cost.getAmount() + "x " + cost.getType().name()));
+            }
+            lore.add("");
+            lore.add(canAfford
+                ? ColorUtil.color("&eClick để đổi Class!")
+                : ColorUtil.color("&cBạn không đủ vật phẩm!"));
+        }
         return lore;
     }
 
@@ -256,20 +229,14 @@ public class ClassSelectGui extends ElysiumGui {
         return cd != null ? cd.getDisplayName() : pc.name();
     }
 
-    private ItemStack getChangeCost() {
-        var cfg = combat.getConfig();
-        if (!cfg.getBoolean("class-change.enabled", true)) return null;
-        String mat = cfg.getString("class-change.item.material", "NETHER_STAR");
-        int amt    = cfg.getInt("class-change.item.amount", 1);
-        Material m = Material.matchMaterial(mat);
-        return m != null ? new ItemStack(m, amt) : null;
-    }
-
     private boolean hasCost(Player p, ItemStack cost) {
         if (cost == null) return true;
         int count = 0;
-        for (ItemStack s : p.getInventory().getContents())
-            if (s != null && s.getType() == cost.getType()) count += s.getAmount();
+        for (ItemStack s : p.getInventory().getContents()) {
+            if (s != null && isChangeItem(s, cost)) {
+                count += s.getAmount();
+            }
+        }
         return count >= cost.getAmount();
     }
 
@@ -278,7 +245,7 @@ public class ClassSelectGui extends ElysiumGui {
         int remaining = cost.getAmount();
         for (int i = 0; i < p.getInventory().getSize() && remaining > 0; i++) {
             ItemStack s = p.getInventory().getItem(i);
-            if (s == null || s.getType() != cost.getType()) continue;
+            if (s == null || !isChangeItem(s, cost)) continue;
             if (s.getAmount() <= remaining) {
                 remaining -= s.getAmount();
                 p.getInventory().setItem(i, null);
@@ -287,5 +254,19 @@ public class ClassSelectGui extends ElysiumGui {
                 remaining = 0;
             }
         }
+    }
+    
+    private boolean isChangeItem(ItemStack item, ItemStack required) {
+        if (item.getType() != required.getType()) return false;
+        if (!required.hasItemMeta()) return true; // If config has no meta, accept any item of this type
+        if (!item.hasItemMeta()) return false;
+        
+        String reqName = required.getItemMeta().getDisplayName();
+        String itemName = item.getItemMeta().getDisplayName();
+        
+        if (reqName != null && itemName != null) {
+            return reqName.equals(itemName);
+        }
+        return false;
     }
 }

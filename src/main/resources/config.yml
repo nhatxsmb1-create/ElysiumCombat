@@ -21,3 +21,9 @@ class-change:
   item:
     material: NETHER_STAR
     amount: 1
+    name: "&6&l✦ Huy Hiệu Chức Nghiệp"
+    lore:
+      - "&7Vật phẩm đặc biệt dùng để thay đổi"
+      - "&7con đường sức mạnh của bạn."
+      - ""
+      - "&e&oThu thập từ các Boss hoặc Sự Kiện."
