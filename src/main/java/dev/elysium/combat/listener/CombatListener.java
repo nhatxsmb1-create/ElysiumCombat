@@ -51,12 +51,15 @@ public class CombatListener implements Listener {
             attacker = p;
         }
 
-        // ── Defense cho victim player ─────────────────────────────────────────
+        // ── Defense & Victim Passives ─────────────────────────────────────────
         if (e.getEntity() instanceof Player victim) {
             CombatStats stats = plugin.getStatsManager().getStats(victim);
             if (stats.getDefense() > 0) {
                 e.setDamage(stats.applyDefense(e.getDamage()));
             }
+
+            // Victim Passives
+            plugin.getPassiveManager().processVictimPassives(victim, e.getDamage());
 
             // Combat Tag: victim bi danh → tag ca hai
             if (attacker != null) {
@@ -67,8 +70,16 @@ public class CombatListener implements Listener {
             plugin.getComboManager().resetCombo(victim.getUniqueId());
         }
 
-        // ── Attacker: Combo + Hit Particle + Tag ─────────────────────────────
+        // ── Attacker Passives, Combo, Hit Particle, Tag ─────────────────────
         if (attacker != null && e.getEntity() instanceof LivingEntity target) {
+            boolean isArrow = e.getDamager() instanceof Projectile;
+            
+            // Attacker Passives
+            double passiveMultiplier = plugin.getPassiveManager().processAttackerPassives(attacker, target, isArrow);
+            if (passiveMultiplier != 1.0) {
+                e.setDamage(e.getDamage() * passiveMultiplier);
+            }
+
             // Combo: tinh bonus damage
             double comboMultiplier = plugin.getComboManager().onHit(attacker);
             if (comboMultiplier > 1.0) {
@@ -83,6 +94,14 @@ public class CombatListener implements Listener {
                 plugin.getCombatTagManager().tagOne(attacker);
             }
         }
+        
+        // Spawn Damage Indicator
+        boolean isCrit = false;
+        if (attacker != null) {
+            // Very basic crit check (falling, not sprinting, not in water, etc. or just based on bonus multiplier)
+            isCrit = !attacker.isOnGround() && attacker.getFallDistance() > 0 && !e.getDamager().getClass().getSimpleName().contains("Arrow");
+        }
+        plugin.getDamageIndicatorManager().spawnIndicator(e.getEntity().getLocation(), e.getDamage(), isCrit);
     }
 
     // ── Death: Kill Notify + Streak + Particle ───────────────────────────────

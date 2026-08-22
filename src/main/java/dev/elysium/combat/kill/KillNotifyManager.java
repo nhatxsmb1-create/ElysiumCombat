@@ -79,6 +79,21 @@ public class KillNotifyManager {
                     break;
                 }
             }
+
+            // Hieu ung VIP
+            if (streak >= 15) {
+                // Set danh khong sat thuong
+                killer.getWorld().strikeLightningEffect(killer.getLocation());
+                Bukkit.getOnlinePlayers().forEach(p ->
+                    p.playSound(p.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 0.8f));
+            } else if (streak >= 8) {
+                // Phao hoa
+                org.bukkit.entity.Firework fw = (org.bukkit.entity.Firework) killer.getWorld().spawnEntity(killer.getLocation(), org.bukkit.entity.EntityType.FIREWORK);
+                org.bukkit.inventory.meta.FireworkMeta fwm = fw.getFireworkMeta();
+                fwm.addEffect(org.bukkit.FireworkEffect.builder().withColor(org.bukkit.Color.RED).withFade(org.bukkit.Color.ORANGE).with(org.bukkit.FireworkEffect.Type.BALL_LARGE).trail(true).flicker(true).build());
+                fwm.setPower(1);
+                fw.setFireworkMeta(fwm);
+            }
         }
 
         // ── Thong bao rieng cho killer ─────────────────────────────────────

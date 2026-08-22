@@ -54,6 +54,11 @@ public class ComboManager {
         if (current >= 2) {
             String bar = buildComboBar(player, current);
             player.sendActionBar(ColorUtil.component(bar));
+            
+            // Hieu ung am thanh tang dan (Pitch shift)
+            float pitch = 0.5f + (current * 0.15f);
+            if (pitch > 2.0f) pitch = 2.0f;
+            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, pitch);
         }
 
         return 1.0 + (current - 1) * BONUS_PER_COMBO;
