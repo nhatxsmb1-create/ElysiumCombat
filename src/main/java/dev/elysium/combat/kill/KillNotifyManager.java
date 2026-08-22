@@ -88,7 +88,7 @@ public class KillNotifyManager {
                     p.playSound(p.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 0.8f));
             } else if (streak >= 8) {
                 // Phao hoa
-                org.bukkit.entity.Firework fw = (org.bukkit.entity.Firework) killer.getWorld().spawnEntity(killer.getLocation(), org.bukkit.entity.EntityType.FIREWORK);
+                org.bukkit.entity.Firework fw = killer.getWorld().spawn(killer.getLocation(), org.bukkit.entity.Firework.class);
                 org.bukkit.inventory.meta.FireworkMeta fwm = fw.getFireworkMeta();
                 fwm.addEffect(org.bukkit.FireworkEffect.builder().withColor(org.bukkit.Color.RED).withFade(org.bukkit.Color.ORANGE).with(org.bukkit.FireworkEffect.Type.BALL_LARGE).trail(true).flicker(true).build());
                 fwm.setPower(1);

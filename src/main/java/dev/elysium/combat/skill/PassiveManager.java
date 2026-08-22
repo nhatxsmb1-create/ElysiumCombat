@@ -41,7 +41,7 @@ public class PassiveManager {
                         for (org.bukkit.entity.Entity e : p.getNearbyEntities(8, 5, 8)) {
                             if (e instanceof Player ally && !ally.isDead() && ally.getHealth() < ally.getMaxHealth()) {
                                 ally.setHealth(Math.min(ally.getMaxHealth(), ally.getHealth() + 1.0));
-                                ally.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, ally.getLocation().add(0, 1, 0), 3, 0.3, 0.3, 0.3, 0);
+                                ally.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, ally.getLocation().add(0, 1, 0), 3, 0.3, 0.3, 0.3, 0);
                                 healedAnyone = true;
                             }
                         }
@@ -80,7 +80,7 @@ public class PassiveManager {
                 if (attackerDir.dot(victimDir) > 0.7) {
                     multiplier = 1.5;
                     attacker.playSound(attacker.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.2f);
-                    victim.getWorld().spawnParticle(Particle.CRIT_MAGIC, victim.getLocation().add(0, 1, 0), 15, 0.5, 0.5, 0.5, 0.1);
+                    victim.getWorld().spawnParticle(Particle.ENCHANTED_HIT, victim.getLocation().add(0, 1, 0), 15, 0.5, 0.5, 0.5, 0.1);
                     attacker.sendActionBar(ColorUtil.component("&5&l[Nội Tại] &fĐâm Lén Chí Mạng (x1.5)!"));
                 }
                 break;
@@ -100,8 +100,8 @@ public class PassiveManager {
         switch (pc) {
             case WARRIOR:
                 if (victim.getHealth() - damage <= victim.getMaxHealth() * 0.3) {
-                    if (!victim.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-                        victim.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 1)); // 5s Res II
+                    if (!victim.hasPotionEffect(PotionEffectType.RESISTANCE)) {
+                        victim.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 1)); // 5s Res II
                         victim.playSound(victim.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1.0f, 0.8f);
                         victim.sendActionBar(ColorUtil.component("&c&l[Nội Tại] &fHuyết Loạn Kích Hoạt!"));
                     }
@@ -113,7 +113,7 @@ public class PassiveManager {
                     if (ep != null) {
                         ep.addMana(10);
                         victim.playSound(victim.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.5f, 2.0f);
-                        victim.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, victim.getLocation().add(0, 1, 0), 10, 0.5, 0.5, 0.5, 0.5);
+                        victim.getWorld().spawnParticle(Particle.ENCHANT, victim.getLocation().add(0, 1, 0), 10, 0.5, 0.5, 0.5, 0.5);
                     }
                 }
                 break;
