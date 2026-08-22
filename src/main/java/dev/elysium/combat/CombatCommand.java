@@ -32,15 +32,58 @@ public class CombatCommand implements CommandExecutor {
             return true;
         }
 
-        if (args.length == 0) { handleMenu(player); return true; }
+        if (args.length == 0) {
+            if (sender instanceof Player p) handleMenu(p);
+            else sender.sendMessage("Lenh nay chi dung trong game.");
+            return true;
+        }
 
         switch (args[0].toLowerCase()) {
-            case "class", "c", "menu", "m" -> handleMenu(player);
-            case "info",  "i"              -> handleInfo(player);
-            case "streak"                  -> handleStreak(player);
-            default                        -> sendHelp(player);
+            case "class", "c", "menu", "m" -> {
+                if (sender instanceof Player p) handleMenu(p);
+            }
+            case "info",  "i"              -> {
+                if (sender instanceof Player p) handleInfo(p);
+            }
+            case "streak"                  -> {
+                if (sender instanceof Player p) handleStreak(p);
+            }
+            case "giveitem", "classitem"   -> handleGiveItem(sender, args);
+            default                        -> sendHelp(sender);
         }
         return true;
+    }
+
+    private void handleGiveItem(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("elysium.combat.admin")) {
+            sender.sendMessage(ColorUtil.color("&cKhong co quyen!"));
+            return;
+        }
+        if (args.length < 2) {
+            sender.sendMessage(ColorUtil.color("&cSu dung: /combat giveitem <player> [soluong]"));
+            return;
+        }
+        Player target = org.bukkit.Bukkit.getPlayerExact(args[1]);
+        if (target == null) {
+            sender.sendMessage(ColorUtil.color("&cNguoi choi khong online!"));
+            return;
+        }
+        int amount = 1;
+        if (args.length > 2) {
+            try { amount = Integer.parseInt(args[2]); }
+            catch (NumberFormatException ignored) {}
+        }
+        
+        org.bukkit.inventory.ItemStack item = plugin.getCombatConfig().getChangeClassItem();
+        if (item == null) {
+            sender.sendMessage(ColorUtil.color("&cTinh nang doi class dang bi tat trong config."));
+            return;
+        }
+        item.setAmount(amount);
+        target.getInventory().addItem(item);
+        
+        sender.sendMessage(ColorUtil.color("&aDa dua " + amount + " Huy Hieu Chuc Nghiep cho " + target.getName()));
+        target.sendMessage(ColorUtil.color("&aBan nhan duoc &e" + amount + "x Huy Hieu Chuc Nghiep&a!"));
     }
 
     private void handleMenu(Player player) {
@@ -74,11 +117,14 @@ public class CombatCommand implements CommandExecutor {
         player.sendMessage(ColorUtil.color("&e⚔ Killstreak cua ban: &f&l" + streak));
     }
 
-    private void sendHelp(Player player) {
-        player.sendMessage(ColorUtil.color("&c=== ElysiumCombat ==="));
-        player.sendMessage(ColorUtil.color("  &7/combat &f- Mo menu chon class"));
-        player.sendMessage(ColorUtil.color("  &7/combat info &f- Xem thong tin chi tiet"));
-        player.sendMessage(ColorUtil.color("  &7/combat streak &f- Xem killstreak"));
-        player.sendMessage(ColorUtil.color("  &7/combat reload &f- Reload config &8(Admin)"));
+    private void sendHelp(CommandSender sender) {
+        sender.sendMessage(ColorUtil.color("&c=== ElysiumCombat ==="));
+        sender.sendMessage(ColorUtil.color("  &7/combat &f- Mo menu chon class"));
+        sender.sendMessage(ColorUtil.color("  &7/combat info &f- Xem thong tin chi tiet"));
+        sender.sendMessage(ColorUtil.color("  &7/combat streak &f- Xem killstreak"));
+        if (sender.hasPermission("elysium.combat.admin")) {
+            sender.sendMessage(ColorUtil.color("  &7/combat giveitem <player> [amount] &f- Phat Huy Hieu Chuc Nghiep"));
+            sender.sendMessage(ColorUtil.color("  &7/combat reload &f- Reload config"));
+        }
     }
 }
