@@ -70,80 +70,20 @@ public class SkillManager {
     // ── Effects ──────────────────────────────────────────────────────────────
 
     public void playSkillEffects(Player player, Skill skill) {
-        String particle = skill.get("particle", "NONE");
+        String particle = skill.getParticle();
         if (!particle.equalsIgnoreCase("NONE")) {
             try {
                 org.bukkit.Particle p = org.bukkit.Particle.valueOf(particle);
                 player.getWorld().spawnParticle(p, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5, 0.1);
             } catch (Exception ignored) {}
         }
-        String sound = skill.get("sound", "NONE");
+        String sound = skill.getSound();
         if (!sound.equalsIgnoreCase("NONE")) {
             try {
                 org.bukkit.Sound s = org.bukkit.Sound.valueOf(sound);
                 player.getWorld().playSound(player.getLocation(), s, 1f, 1f);
             } catch (Exception ignored) {}
         }
-    }
-
-    // ── Kich hoat Skill ──────────────────────────────────────────────────────
-    
-    public void activate(Player player, int slot) {
-        PlayerClass pc = plugin.getClassManager().getPlayerClass(player.getUniqueId());
-        if (pc == null || pc == PlayerClass.NONE) return;
-
-        Skill skill = getSkill(pc, slot);
-        if (skill == null) return;
-
-        String cdKey = pc + "_skill" + slot;
-        long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
-        if (rem > 0) {
-            player.sendMessage(ColorUtil.color("&cChiêu thức chưa sẵn sàng! Thử lại sau " + rem + "s."));
-            return;
-        }
-
-        dev.elysium.core.player.ElysiumPlayer ep = CoreAPI.getPlayer(player);
-        if (ep == null) return;
-        if (ep.getMana() < skill.getManaCost()) {
-            player.sendMessage(ColorUtil.color("&cKhông đủ Mana!"));
-            return;
-        }
-
-        ep.setMana(ep.getMana() - skill.getManaCost());
-        CoreAPI.getCore().getCooldownManager().setCooldown(player.getUniqueId(), cdKey, skill.getCooldownSeconds());
-
-        playSkillEffects(player, skill);
-
-        if (skill.getEffect() != null) {
-            switch (skill.getEffect()) {
-                case BUFF_POTION -> {
-                    String type = skill.get("potion_type", "SPEED");
-                    int dur = skill.get("duration", 100);
-                    int amp = skill.get("amplifier", 0);
-                    try {
-                        org.bukkit.potion.PotionEffectType pet = org.bukkit.potion.PotionEffectType.getByName(type);
-                        if (pet != null) {
-                            player.addPotionEffect(new org.bukkit.potion.PotionEffect(pet, dur, amp));
-                        }
-                    } catch (Exception ignored) {}
-                }
-                case RESTORE_MANA -> {
-                    int amount = skill.get("amount", 20);
-                    ep.setMana(Math.min(ep.getMaxMana(), ep.getMana() + amount));
-                }
-                case HEAL -> {
-                    double amount = skill.get("amount", 4.0);
-                    player.setHealth(Math.min(player.getMaxHealth(), player.getHealth() + amount));
-                }
-                case DASH -> {
-                    double str = skill.get("strength", 1.5);
-                    org.bukkit.util.Vector v = player.getLocation().getDirection().normalize().multiply(str).setY(0.2);
-                    player.setVelocity(v);
-                }
-            }
-        }
-
-        refreshHotbarSkills(player, pc);
     }
 
     // ── Skill item ───────────────────────────────────────────────────────────
@@ -172,6 +112,7 @@ public class SkillManager {
         List<String> lore = new ArrayList<>();
         lore.add(ColorUtil.color("&8&m                     "));
         
+        // Word wrap description manually or keep it as is (assuming short descriptions)
         lore.add(ColorUtil.color("&7" + skill.getDescription()));
         
         lore.add("");
