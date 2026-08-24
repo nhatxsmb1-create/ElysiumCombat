@@ -110,7 +110,7 @@ public class SkillManager {
         }
 
         ep.setMana(ep.getMana() - skill.getManaCost());
-        CoreAPI.getCore().getCooldownManager().setCooldown(player.getUniqueId(), cdKey, skill.getCooldownSeconds());
+        CoreAPI.getCore().getCooldownManager().set(player.getUniqueId(), cdKey, skill.getCooldownSeconds() * 1000L);
 
         playSkillEffects(player, skill);
 
