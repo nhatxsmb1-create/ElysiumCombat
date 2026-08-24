@@ -26,6 +26,47 @@ public class SkillManager {
 
     public SkillManager(ElysiumCombat plugin) {
         this.plugin = plugin;
+        loadSkills();
+    }
+
+    private void loadSkills() {
+        java.io.File file = new java.io.File(plugin.getDataFolder(), "skills.yml");
+        if (!file.exists()) {
+            plugin.saveResource("skills.yml", false);
+        }
+        org.bukkit.configuration.file.FileConfiguration cfg = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
+        org.bukkit.configuration.ConfigurationSection root = cfg.getConfigurationSection("skills");
+        if (root == null) return;
+        
+        for (String className : root.getKeys(false)) {
+            PlayerClass pc;
+            try { pc = PlayerClass.valueOf(className.toUpperCase()); }
+            catch (Exception e) { continue; }
+            
+            org.bukkit.configuration.ConfigurationSection classSec = root.getConfigurationSection(className);
+            if (classSec == null) continue;
+            
+            for (int i = 1; i <= 3; i++) {
+                org.bukkit.configuration.ConfigurationSection s = classSec.getConfigurationSection("skill" + i);
+                if (s == null) continue;
+                
+                String name = s.getString("name", "Unknown");
+                String desc = s.getString("description", "No description");
+                String icon = s.getString("icon", "⚔");
+                int mana = s.getInt("mana-cost", 0);
+                int cd = s.getInt("cooldown", 10);
+                
+                SkillEffect eff = SkillEffect.BUFF_POTION;
+                try { eff = SkillEffect.valueOf(s.getString("effect", "BUFF_POTION").toUpperCase()); }
+                catch(Exception ignored) {}
+                
+                Map<String, Object> params = new java.util.HashMap<>(s.getValues(false));
+                
+                Skill skill = new Skill(name, desc, icon, mana, cd, eff, params);
+                registerSkill(pc, i, skill);
+            }
+        }
+        plugin.getLogger().info("Loaded skills for " + skills.size() + " classes.");
     }
 
     public void registerSkill(PlayerClass pc, int slot, Skill skill) {
@@ -118,8 +159,12 @@ public class SkillManager {
             switch (skill.getEffect()) {
                 case BUFF_POTION -> {
                     String type = skill.get("potion_type", "SPEED");
+                    if (type == null) type = skill.get("potion-type", "SPEED");
                     int dur = skill.get("duration", 100);
                     int amp = skill.get("amplifier", 0);
+                    if (skill.get("potion-amplifier", null) != null) {
+                        amp = skill.get("potion-amplifier", 0);
+                    }
                     try {
                         org.bukkit.potion.PotionEffectType pet = org.bukkit.potion.PotionEffectType.getByName(type);
                         if (pet != null) {
@@ -129,14 +174,17 @@ public class SkillManager {
                 }
                 case RESTORE_MANA -> {
                     int amount = skill.get("amount", 20);
+                    if (skill.get("mana-restore", null) != null) amount = skill.get("mana-restore", 20);
                     ep.setMana(Math.min(ep.getMaxMana(), ep.getMana() + amount));
                 }
                 case HEAL -> {
                     double amount = skill.get("amount", 4.0);
+                    if (skill.get("heal-amount", null) != null) amount = skill.get("heal-amount", 4.0);
                     player.setHealth(Math.min(player.getMaxHealth(), player.getHealth() + amount));
                 }
                 case DASH -> {
                     double str = skill.get("strength", 1.5);
+                    if (skill.get("dash-distance", null) != null) str = skill.get("dash-distance", 1.5);
                     org.bukkit.util.Vector v = player.getLocation().getDirection().normalize().multiply(str).setY(0.2);
                     player.setVelocity(v);
                 }
