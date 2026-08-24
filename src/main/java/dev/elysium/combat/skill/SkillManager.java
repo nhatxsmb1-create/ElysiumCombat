@@ -209,7 +209,7 @@ public class SkillManager {
         return item;
     }
 
-    public void refreshSkillItemMeta(Player player, ItemStack item, PlayerClass pc, int slot, Skill skill) {
+        public void refreshSkillItemMeta(Player player, ItemStack item, PlayerClass pc, int slot, Skill skill) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
@@ -241,17 +241,6 @@ public class SkillManager {
         item.setItemMeta(meta);
     }
 
-        meta.setLore(lore);
-        meta.setCustomModelData(2000 + slot);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS,
-            ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            
-        org.bukkit.NamespacedKey key = new org.bukkit.NamespacedKey(plugin, "elysium_skill");
-        meta.getPersistentDataContainer().set(key, org.bukkit.persistence.PersistentDataType.BYTE, (byte) 1);
-            
-        item.setItemMeta(meta);
-    }
-
     public void refreshHotbarSkills(Player player, PlayerClass pc) {
         if (pc == PlayerClass.NONE) return;
         int[] slots = {
@@ -266,6 +255,5 @@ public class SkillManager {
             if (!isSkillItem(item)) continue;
             refreshSkillItemMeta(player, item, pc, i, skill);
         }
-    }
     }
 }
