@@ -139,14 +139,16 @@ public class SkillManager {
         String cdKey = pc + "_skill" + slot;
         long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
         if (rem > 0) {
-            player.sendMessage(ColorUtil.color("&cChiêu thức chưa sẵn sàng! Thử lại sau " + rem + "s."));
+            player.sendActionBar(net.kyori.adventure.text.Component.text(
+                ColorUtil.color("&cChiêu thức chưa sẵn sàng! Thử lại sau " + rem + "s.")));
             return;
         }
 
         dev.elysium.core.player.ElysiumPlayer ep = CoreAPI.getPlayer(player);
         if (ep == null) return;
         if (ep.getMana() < skill.getManaCost()) {
-            player.sendMessage(ColorUtil.color("&cKhông đủ Mana!"));
+            player.sendActionBar(net.kyori.adventure.text.Component.text(
+                ColorUtil.color("&cKhông đủ Mana!")));
             return;
         }
 
