@@ -1,0 +1,235 @@
+Created At: 2026-08-22T16:05:56+07:00
+Completed At: 2026-08-22T16:05:56+07:00
+File Path: `file:///c:/Users/PC/OneDrive/T%C3%A0i%20li%E1%BB%87u/GitHub/ElysiumCombat/src/main/java/dev/elysium/combat/skill/SkillManager.java`
+Total Lines: 227
+Total Bytes: 10349
+Showing lines 1 to 227
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: package dev.elysium.combat.skill;
+2: 
+3: import dev.elysium.combat.ElysiumCombat;
+4: import dev.elysium.combat.clazz.PlayerClass;
+5: import dev.elysium.core.api.CoreAPI;
+6: import dev.elysium.core.player.ElysiumPlayer;
+7: import dev.elysium.core.util.ColorUtil;
+8: import org.bukkit.Material;
+9: import org.bukkit.Particle;
+10: import org.bukkit.Sound;
+11: import org.bukkit.configuration.ConfigurationSection;
+12: import org.bukkit.configuration.file.YamlConfiguration;
+13: import org.bukkit.entity.Player;
+14: import org.bukkit.inventory.ItemFlag;
+15: import org.bukkit.inventory.ItemStack;
+16: import org.bukkit.inventory.meta.ItemMeta;
+17: import org.bukkit.potion.PotionEffect;
+18: import org.bukkit.potion.PotionEffectType;
+19: import org.bukkit.util.Vector;
+20: 
+21: import java.io.File;
+22: import java.util.*;
+23: 
+24: public class SkillManager {
+25: 
+26:     private final ElysiumCombat plugin;
+27:     private final Map<PlayerClass, Map<Integer, Skill>> skills = new EnumMap<>(PlayerClass.class);
+28: 
+29:     public static final int CMD_SKILL_1 = 2001;
+30:     public static final int CMD_SKILL_2 = 2002;
+31:     public static final int CMD_SKILL_3 = 2003;
+32: 
+33:     public SkillManager(ElysiumCombat plugin) {
+34:         this.plugin = plugin;
+35:         loadSkills();
+36:     }
+37: 
+38:     private void loadSkills() {
+39:         File file = new File(plugin.getDataFolder(), "skills.yml");
+40:         ConfigurationSection root = YamlConfiguration.loadConfiguration(file)
+41:             .getConfigurationSection("skills");
+42:         if (root == null) { plugin.getLogger().warning("skills.yml trong!"); return; }
+43: 
+44:         for (String className : root.getKeys(false)) {
+45:             try {
+46:                 PlayerClass pc = PlayerClass.valueOf(className.toUpperCase());
+47:                 ConfigurationSection cs = root.getConfigurationSection(className);
+48:                 Map<Integer, Skill> slotMap = new HashMap<>();
+49:                 for (int i = 1; i <= 3; i++) {
+50:                     ConfigurationSection s = cs.getConfigurationSection("skill" + i);
+51:                     if (s == null) continue;
+52:                     try {
+53:                         SkillEffect fx = SkillEffect.valueOf(s.getString("effect","BUFF_POTION").toUpperCase());
+54:                         slotMap.put(i, new Skill(
+55:                             s.getString("name","Skill "+i),
+56:                             s.getString("description",""),
+57:                             s.getString("icon",""),
+58:                             s.getInt("mana-cost", 0),
+59:                             s.getInt("cooldown",10),
+60:                             fx, new HashMap<>(s.getValues(false))
+61:                         ));
+62:                     } catch (Exception e) {
+63:                         plugin.getLogger().warning("Loi skill"+i+" cua "+className+": "+e.getMessage());
+64:                     }
+65:                 }
+66:                 skills.put(pc, slotMap);
+67:             } catch (IllegalArgumentException ignored) {}
+68:         }
+69:         plugin.getLogger().info("Skills loaded: " + skills.size() + " classes.");
+70:     }
+71: 
+72:     public Skill getSkill(PlayerClass pc, int slot) {
+73:         Map<Integer,Skill> m = skills.get(pc);
+74:         return m != null ? m.get(slot) : null;
+75:     }
+76: 
+77:     // ── Skill item ────────────────────────────────────────────────────────────
+78: 
+79:     public ItemStack buildSkillItem(Player player, PlayerClass pc, int slot) {
+80:         Skill skill = getSkill(pc, slot);
+81:         Material mat = Material.valueOf(plugin.getCombatConfig().getSkillItemMaterial());
+82:         if (skill == null) return new ItemStack(mat);
+83:         ItemStack item = new ItemStack(mat);
+84:         refreshSkillItemMeta(player, item, pc, slot, skill);
+85:         return item;
+86:     }
+87: 
+88:     public void refreshSkillItemMeta(Player player, ItemStack item, PlayerClass pc, int slot, Skill skill) {
+89:         ItemMeta meta = item.getItemMeta();
+90:         if (meta == null) return;
+91: 
+92:         String cdKey = pc + "_skill" + slot;
+93:         long rem  = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
+94:         boolean onCd = rem > 0;
+95: 
+96:         meta.setDisplayName(ColorUtil.color(skill.getIcon() + " &f" + skill.getName()));
+97: 
+98:         List<String> lore = new ArrayList<>();
+99:         lore.add(ColorUtil.color("&7" + skill.getDescription()));
+100:         lore.add("");
+101:         lore.add(ColorUtil.color("&7Cooldown: &f" + skill.getCooldownSeconds() + "s"));
+102:         lore.add("");
+103:         lore.add(onCd
+104:             ? ColorUtil.color("&c⏳ Hoi chieu: &e" + rem + "s")
+105:             : ColorUtil.color("&a✔ San sang"));
+106:         lore.add(ColorUtil.color("&8Chuot phai de dung"));
+107: 
+108:         meta.setLore(lore);
+109:         meta.setCustomModelData(2000 + slot);
+110:         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS,
+111:             ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+112:         item.setItemMeta(meta);
+113:     }
+114: 
+115:     public void refreshHotbarSkills(Player player, PlayerClass pc) {
+116:         if (pc == PlayerClass.NONE) return;
+117:         int[] slots = {
+118:             plugin.getCombatConfig().getSkillSlot(1),
+119:             plugin.getCombatConfig().getSkillSlot(2),
+120:             plugin.getCombatConfig().getSkillSlot(3)
+121:         };
+122:         for (int i = 1; i <= 3; i++) {
+123:             ItemStack item = player.getInventory().getItem(slots[i-1]);
+124:             Skill skill = getSkill(pc, i);
+125:             if (item == null || skill == null) continue;
+126:             if (!item.hasItemMeta() || item.getItemMeta().getCustomModelData() != 2000+i) continue;
+127:             refreshSkillItemMeta(player, item, pc, i, skill);
+128:         }
+129:     }
+130: 
+131:     // ── Activate — chi check cooldown, khong ton mana ─────────────────────────
+132: 
+133:     public void activate(Player player, int slot) {
+134:         PlayerClass pc = plugin.getClassManager().getPlayerClass(player.getUniqueId());
+135:         if (pc == PlayerClass.NONE) {
+136:             player.sendMessage(ColorUtil.color("&cHay chon class truoc: /combat class"));
+137:             return;
+138:         }
+139:         Skill skill = getSkill(pc, slot);
+140:         if (skill == null) return;
+141: 
+142:         String cdKey = pc + "_skill" + slot;
+143: 
+144:         // Chi kiem tra cooldown
+145:         if (CoreAPI.getCore().getCooldownManager().has(player.getUniqueId(), cdKey)) {
+146:             long rem = CoreAPI.getCore().getCooldownManager().remainingSeconds(player.getUniqueId(), cdKey);
+147:             player.sendActionBar(ColorUtil.component("&c" + skill.getName() + " &7hoi chieu! &e" + rem + "s"));
+148:             return;
+149:         }
+150: 
+151:         // Set cooldown va execute
+152:         CoreAPI.getCore().getCooldownManager().set(
+153:             player.getUniqueId(), cdKey, skill.getCooldownSeconds() * 1000L);
+154: 
+155:         executeEffect(player, skill);
+156: 
+157:         player.sendActionBar(ColorUtil.component(skill.getIcon() + " &e" + skill.getName() + " &7kich hoat!"));
+158:         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
+159:         player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().add(0,1,0), 10);
+160: 
+161:         refreshHotbarSkills(player, pc);
+162:     }
+163: 
+164:     // ── Kiem tra skill item (PUBLIC de dung o nhieu noi) ─────────────────────
+165: 
+166:     public boolean isSkillItem(ItemStack item) {
+167:         if (item == null || item.getType().isAir()) return false;
+168:         if (!item.hasItemMeta()) return false;
+169:         ItemMeta meta = item.getItemMeta();
+170:         if (!meta.hasCustomModelData()) return false;
+171:         int cmd = meta.getCustomModelData();
+172:         return cmd >= CMD_SKILL_1 && cmd <= CMD_SKILL_3;
+173:     }
+174: 
+175:     // ── Effects ───────────────────────────────────────────────────────────────
+176: 
+177:     private void executeEffect(Player player, Skill skill) {
+178:         switch (skill.getEffect()) {
+179:             case BUFF_POTION  -> buffPotion(player, skill);
+180:             case RESTORE_MANA -> restoreMana(player, skill);
+181:             case HEAL         -> heal(player, skill);
+182:             case DASH         -> dash(player, skill);
+183:         }
+184:     }
+185: 
+186:     private void buffPotion(Player player, Skill skill) {
+187:         applyPotion(player, skill.get("potion-type","SPEED"),
+188:             skill.get("potion-amplifier",0), skill.get("duration",100));
+189:         String extra = skill.get("extra-potion-type","");
+190:         if (!extra.isBlank()) applyPotion(player, extra,
+191:             skill.get("extra-potion-amplifier",0), skill.get("extra-duration",100));
+192:     }
+193: 
+194:     private void applyPotion(Player player, String name, int amp, int dur) {
+195:         PotionEffectType type = PotionEffectType.getByName(name);
+196:         if (type == null) return;
+197:         player.addPotionEffect(new PotionEffect(type, dur, amp, false, true, true));
+198:     }
+199: 
+200:     private void restoreMana(Player player, Skill skill) {
+201:         int amount = skill.get("mana-restore",50);
+202:         ElysiumPlayer ep = CoreAPI.getPlayer(player);
+203:         if (ep != null) {
+204:             ep.addMana(amount);
+205:             player.getWorld().spawnParticle(Particle.ENCHANT,
+206:                 player.getLocation().add(0,1,0), 20, 0.5,0.5,0.5, 0.2);
+207:         }
+208:     }
+209: 
+210:     private void heal(Player player, Skill skill) {
+211:         double amt   = skill.get("heal-amount",6.0);
+212:         int regenDur = skill.get("regen-duration",60);
+213:         int regenAmp = skill.get("regen-amplifier",0);
+214:         player.setHealth(Math.min(player.getHealth()+amt, player.getMaxHealth()));
+215:         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, regenDur, regenAmp));
+216:         player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0,1,0), 8, 0.5,0.5,0.5,0);
+217:         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.8f);
+218:     }
+219: 
+220:     private void dash(Player player, Skill skill) {
+221:         double dist = skill.get("dash-distance",6.0);
+222:         player.setVelocity(player.getLocation().getDirection().normalize().multiply(dist).setY(0.3));
+223:         player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 15,0.3,0.2,0.3,0.05);
+224:         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.5f, 1.5f);
+225:     }
+226: }
+227: 
+The above content shows the entire, complete file contents of the requested file.
