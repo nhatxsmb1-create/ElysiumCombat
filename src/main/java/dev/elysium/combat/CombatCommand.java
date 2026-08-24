@@ -22,8 +22,14 @@ public class CombatCommand implements CommandExecutor {
                 sender.sendMessage(ColorUtil.color("&cKhong co quyen!"));
                 return true;
             }
+            try {
+                plugin.saveResource("classes.yml", true);
+                plugin.saveResource("config.yml", true);
+                plugin.saveResource("skills.yml", true);
+                sender.sendMessage(ColorUtil.color("&e[Hệ Thống] Đã đồng bộ & cập nhật toàn bộ file YML từ lõi Source!"));
+            } catch (Exception ex) {}
             plugin.reload();
-            sender.sendMessage(ColorUtil.color("&a[ElysiumCombat] Da reload thanh cong!"));
+            sender.sendMessage(ColorUtil.color("&a[ElysiumCombat] Đã reload thành công!"));
             return true;
         }
 
