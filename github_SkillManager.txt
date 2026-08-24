@@ -254,19 +254,8 @@ public class SkillManager {
             plugin.getCombatConfig().getSkillSlot(3)
         };
         for (int i = 1; i <= 3; i++) {
-            ItemStack existing = player.getInventory().getItem(slots[i - 1]);
-            // Chi update meta, khong thay the item (tranh animation giong vu khi)
-            if (existing != null && isSkillItem(existing)) {
-                Skill skill = getSkill(pc, i);
-                if (skill != null) {
-                    refreshSkillItemMeta(player, existing, pc, i, skill);
-                    player.getInventory().setItem(slots[i - 1], existing); // Apply meta update
-                }
-            } else {
-                // Slot trong hoac co item khong phai skill -> dat moi vao
-                ItemStack item = buildSkillItem(player, pc, i);
-                player.getInventory().setItem(slots[i - 1], item);
-            }
+            ItemStack item = buildSkillItem(player, pc, i);
+            player.getInventory().setItem(slots[i-1], item);
         }
     }
 }
