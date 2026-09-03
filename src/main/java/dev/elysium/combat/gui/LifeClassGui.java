@@ -1,4 +1,4 @@
-package dev.elysium.combat.gui;
+﻿package dev.elysium.combat.gui;
 
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.LifeClass;
@@ -12,13 +12,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.ItemFlag;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LifeClassGui implements Listener {
     private final ElysiumCombat plugin;
-    public static final String TITLE = ColorUtil.color("&8&lCHá»ŒN NGHá»€ NGHIá»†P");
+    public static final String TITLE = ColorUtil.color("&8&lCHỌN NGHỀ NGHIỆP");
 
     public LifeClassGui(ElysiumCombat plugin) {
         this.plugin = plugin;
@@ -29,7 +30,16 @@ public class LifeClassGui implements Listener {
         Inventory inv = Bukkit.createInventory(null, 27, TITLE);
         
         ItemStack bg = createItem(Material.BLACK_STAINED_GLASS_PANE, " ", "");
-        for(int i=0; i<27; i++) inv.setItem(i, bg);
+        for(int i = 0; i < 27; i++) inv.setItem(i, bg);
+
+        // Trang trí màu sắc cho từng Cột Nghề
+        ItemStack bluePane = createItem(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", "");
+        ItemStack greenPane = createItem(Material.LIME_STAINED_GLASS_PANE, " ", "");
+        ItemStack redPane = createItem(Material.RED_STAINED_GLASS_PANE, " ", "");
+
+        inv.setItem(2, bluePane); inv.setItem(20, bluePane);
+        inv.setItem(4, greenPane); inv.setItem(22, greenPane);
+        inv.setItem(6, redPane); inv.setItem(24, redPane);
 
         LifeClass current = plugin.getLifeClassManager().getLifeClass(p);
 
@@ -46,39 +56,39 @@ public class LifeClassGui implements Listener {
         ItemMeta meta = item.getItemMeta();
         
         String name = "";
-        if (clazz == LifeClass.FORGER) name = "&b&lKHAI PHĂ GIáº¢";
-        else if (clazz == LifeClass.STRIKER) name = "&c&lCHIáº¾N THáº¦N";
-        else if (clazz == LifeClass.FREELANCER) name = "&a&lLĂƒNG KHĂCH";
+        if (clazz == LifeClass.FORGER) name = "&b&lKHAI PHÁ GIẢ";
+        else if (clazz == LifeClass.STRIKER) name = "&c&lCHIẾN THẦN";
+        else if (clazz == LifeClass.FREELANCER) name = "&a&lLÃNG KHÁCH";
         
         meta.setDisplayName(ColorUtil.color(name));
         List<String> lore = new ArrayList<>();
         lore.add("");
         
         if (clazz == LifeClass.FORGER) {
-            lore.add(ColorUtil.color("&7* Nghá» chuyĂªn dá»¥ng cho ngÆ°á»i cĂ y má»."));
-            lore.add(ColorUtil.color("&a+ 200% &7Tá»‘c Ä‘á»™ Ä‘Ă o má»"));
-            lore.add(ColorUtil.color("&a+ Má»Ÿ khĂ³a 100% &7Tiá»m nÄƒng CĂºp Láº¯p RĂ¡p"));
-            lore.add(ColorUtil.color("&c- 50% &7SĂ¡t thÆ°Æ¡ng LĂµi Há»‡ PhĂ¡i"));
+            lore.add(ColorUtil.color("&7* Nghề chuyên dụng cho người cày mỏ."));
+            lore.add(ColorUtil.color("&a+ 200% &7Tốc độ đào mỏ (Haste 3)"));
+            lore.add(ColorUtil.color("&a+ Mở khóa 100% &7Tiềm năng Cúp Lắp Ráp"));
+            lore.add(ColorUtil.color("&c- 50% &7Sát thương Lõi Hệ Phái"));
         } else if (clazz == LifeClass.STRIKER) {
-            lore.add(ColorUtil.color("&7* Nghá» chuyĂªn dá»¥ng Ä‘Ă¡nh Boss Ä‘i áº£i."));
-            lore.add(ColorUtil.color("&a+ 150% &7SĂ¡t thÆ°Æ¡ng LĂµi Há»‡ PhĂ¡i"));
-            lore.add(ColorUtil.color("&c- Bá»‹ giáº£m cá»±c máº¡nh &7tá»‘c Ä‘á»™ Ä‘Ă o má»"));
+            lore.add(ColorUtil.color("&7* Nghề chuyên dụng đánh Boss đi ải."));
+            lore.add(ColorUtil.color("&a+ 150% &7Sát thương Lõi Hệ Phái"));
+            lore.add(ColorUtil.color("&c- Bị giảm cực mạnh &7tốc độ đào mỏ"));
         } else if (clazz == LifeClass.FREELANCER) {
-            lore.add(ColorUtil.color("&7* DĂ nh cho ngÆ°á»i chÆ¡i há»‡ CĂ y ÄÆ¡n Äá»™c (Solo)."));
-            lore.add(ColorUtil.color("&e+ 100% &7SĂ¡t thÆ°Æ¡ng chiáº¿n Ä‘áº¥u (BĂ¬nh thÆ°á»ng)"));
-            lore.add(ColorUtil.color("&e+ 100% &7Tá»‘c Ä‘á»™ Ä‘Ă o má» (BĂ¬nh thÆ°á»ng)"));
+            lore.add(ColorUtil.color("&7* Dành cho người chơi hệ Cày Đơn Độc (Solo)."));
+            lore.add(ColorUtil.color("&e+ 100% &7Sát thương chiến đấu (Bình thường)"));
+            lore.add(ColorUtil.color("&e+ 100% &7Tốc độ đào mỏ (Bình thường)"));
         }
         
         lore.add("");
         if (isCurrent) {
-            lore.add(ColorUtil.color("&a&l[ ÄANG CHá»ŒN ]"));
+            lore.add(ColorUtil.color("&a&l[ ĐANG CHỌN ]"));
             meta.addEnchant(org.bukkit.enchantments.Enchantment.RESPIRATION, 1, true);
-            meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS, org.bukkit.inventory.ItemFlag.HIDE_ATTRIBUTES);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         } else {
-            lore.add(ColorUtil.color("&eNháº¥p Ä‘á»ƒ chuyá»ƒn sang nghá» nĂ y."));
+            lore.add(ColorUtil.color("&eNhấp để chuyển sang nghề này."));
         }
         
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
@@ -88,6 +98,7 @@ public class LifeClassGui implements Listener {
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ColorUtil.color(name));
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
         return item;
     }
@@ -107,7 +118,7 @@ public class LifeClassGui implements Listener {
         
         if (target != null && target != current) {
             plugin.getLifeClassManager().setLifeClass(p, target);
-            p.sendMessage(ColorUtil.color("&aBáº¡n Ä‘Ă£ chuyá»ƒn Ä‘á»•i Nghá» Nghiá»‡p thĂ nh cĂ´ng!"));
+            p.sendMessage(ColorUtil.color("&aBạn đã chuyển đổi Nghề Nghiệp thành công!"));
             p.closeInventory();
             open(p);
         }
