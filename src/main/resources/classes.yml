@@ -1,12 +1,12 @@
 classes:
   WARRIOR:
-    display-name: "&c&l⚔ Chiến Binh"
-    description: "Bậc thầy cận chiến, chống chịu tốt và sinh tồn mạnh mẽ."
+    display-name: "&c&lâ” Chiáº¿n Binh"
+    description: "Báº­c tháº§y cáº­n chiáº¿n, chá»‘ng chá»‹u tá»‘t vĂ  sinh tá»“n máº¡nh máº½."
     item: NETHERITE_SWORD
     optimized-weapons:
-      - "&fĐại Kiếm"
-      - "&fHoa Kiếm"
-      - "&fĐại Phủ"
+      - "&fÄáº¡i Kiáº¿m"
+      - "&fHoa Kiáº¿m"
+      - "&fÄáº¡i Phá»§"
     stats:
       bonus-hp: 20.0
       bonus-damage: 2.0
@@ -16,13 +16,13 @@ classes:
       max-mana-bonus: -20
 
   MAGE:
-    display-name: "&9&l✦ Pháp Sư"
-    description: "Điều khiển năng lượng vô tận, tung đòn phép thuật diện rộng."
+    display-name: "&9&lâœ¦ PhĂ¡p SÆ°"
+    description: "Äiá»u khiá»ƒn nÄƒng lÆ°á»£ng vĂ´ táº­n, tung Ä‘Ă²n phĂ©p thuáº­t diá»‡n rá»™ng."
     item: END_CRYSTAL
     optimized-weapons:
-      - "&fTrượng Phép"
-      - "&fOrb Năng Lượng"
-      - "&fSách Ma Thuật"
+      - "&fTrÆ°á»£ng PhĂ©p"
+      - "&fOrb NÄƒng LÆ°á»£ng"
+      - "&fSĂ¡ch Ma Thuáº­t"
     stats:
       bonus-hp: -6.0
       bonus-damage: 1.0
@@ -32,13 +32,13 @@ classes:
       max-mana-bonus: 150
 
   RANGER:
-    display-name: "&a&l🏹 Xạ Thủ"
-    description: "Chuyên gia đánh xa, cơ động và chính xác tuyệt đối."
+    display-name: "&a&lđŸ¹ Xáº¡ Thá»§"
+    description: "ChuyĂªn gia Ä‘Ă¡nh xa, cÆ¡ Ä‘á»™ng vĂ  chĂ­nh xĂ¡c tuyá»‡t Ä‘á»‘i."
     item: BOW
     optimized-weapons:
-      - "&fCung Dài"
-      - "&fNỏ Liên Châu"
-      - "&fSong Súng"
+      - "&fCung DĂ i"
+      - "&fNá» LiĂªn ChĂ¢u"
+      - "&fSong SĂºng"
     stats:
       bonus-hp: -2.0
       bonus-damage: 3.0
@@ -48,12 +48,12 @@ classes:
       max-mana-bonus: 20
 
   ASSASSIN:
-    display-name: "&5&l🗡 Thích Khách"
-    description: "Ẩn mình trong bóng tối, một đòn chí mạng kết liễu kẻ thù."
+    display-name: "&5&lđŸ—¡ ThĂ­ch KhĂ¡ch"
+    description: "áº¨n mĂ¬nh trong bĂ³ng tá»‘i, má»™t Ä‘Ă²n chĂ­ máº¡ng káº¿t liá»…u káº» thĂ¹."
     item: PHANTOM_MEMBRANE
     optimized-weapons:
-      - "&fDao Găm"
-      - "&fSong Kiếm"
+      - "&fDao GÄƒm"
+      - "&fSong Kiáº¿m"
       - "&fKatana"
     stats:
       bonus-hp: -8.0
@@ -64,13 +64,13 @@ classes:
       max-mana-bonus: 0
 
   SUPPORT:
-    display-name: "&e&l🛡 Hỗ Trợ"
-    description: "Trái tim của đội hình, cung cấp buff và hiệu ứng khống chế."
+    display-name: "&e&lđŸ›¡ Há»— Trá»£"
+    description: "TrĂ¡i tim cá»§a Ä‘á»™i hĂ¬nh, cung cáº¥p buff vĂ  hiá»‡u á»©ng khá»‘ng cháº¿."
     item: TOTEM_OF_UNDYING
     optimized-weapons:
-      - "&fKhiên Thánh"
-      - "&fCờ Lệnh"
-      - "&fNhẫn Hỗ Trợ"
+      - "&fKhiĂªn ThĂ¡nh"
+      - "&fCá» Lá»‡nh"
+      - "&fNháº«n Há»— Trá»£"
     stats:
       bonus-hp: 10.0
       bonus-damage: -2.0

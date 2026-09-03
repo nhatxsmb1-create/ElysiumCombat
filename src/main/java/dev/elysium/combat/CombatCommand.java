@@ -26,10 +26,10 @@ public class CombatCommand implements CommandExecutor {
                 plugin.saveResource("classes.yml", true);
                 plugin.saveResource("config.yml", true);
                 plugin.saveResource("skills.yml", true);
-                sender.sendMessage(ColorUtil.color("&e[Hệ Thống] Đã đồng bộ & cập nhật toàn bộ file YML từ lõi Source!"));
+                sender.sendMessage(ColorUtil.color("&e[Há»‡ Thá»‘ng] ÄĂ£ Ä‘á»“ng bá»™ & cáº­p nháº­t toĂ n bá»™ file YML tá»« lĂµi Source!"));
             } catch (Exception ex) {}
             plugin.reload();
-            sender.sendMessage(ColorUtil.color("&a[ElysiumCombat] Đã reload thành công!"));
+            sender.sendMessage(ColorUtil.color("&a[ElysiumCombat] ÄĂ£ reload thĂ nh cĂ´ng!"));
             return true;
         }
 
@@ -93,7 +93,7 @@ public class CombatCommand implements CommandExecutor {
     }
 
     private void handleMenu(Player player) {
-        CoreAPI.getCore().getGuiManager().open(player, new ClassSelectGui(plugin));
+        new dev.elysium.combat.gui.LifeClassGui(plugin).open(player);
     }
 
     private void handleInfo(Player player) {
@@ -102,7 +102,7 @@ public class CombatCommand implements CommandExecutor {
         ClassData cd = pc != null ? plugin.getClassManager().getClassData(pc) : null;
 
         player.sendMessage(ColorUtil.color("&c=== Combat Info ==="));
-        player.sendMessage(ColorUtil.color("  &7Class: " + (cd != null ? cd.getDisplayName() : "&cChua chon — /combat")));
+        player.sendMessage(ColorUtil.color("  &7Class: " + (cd != null ? cd.getDisplayName() : "&cChua chon â€” /combat")));
         if (ep != null) {
             player.sendMessage(ColorUtil.color("  &7Mana: &b" + ep.getMana() + "/" + ep.getMaxMana()));
             player.sendMessage(ColorUtil.color("  &7Level: &e" + ep.getLevel()));
@@ -115,12 +115,12 @@ public class CombatCommand implements CommandExecutor {
         int combo  = plugin.getComboManager().getCombo(player.getUniqueId());
         player.sendMessage(ColorUtil.color("  &7Killstreak: &e" + streak));
         player.sendMessage(ColorUtil.color("  &7Combo hien tai: &f" + combo + "x"));
-        player.sendMessage(ColorUtil.color("  &8/combat — mo menu chon class"));
+        player.sendMessage(ColorUtil.color("  &8/combat â€” mo menu chon class"));
     }
 
     private void handleStreak(Player player) {
         int streak = plugin.getKillNotifyManager().getKillstreak(player.getUniqueId());
-        player.sendMessage(ColorUtil.color("&e⚔ Killstreak cua ban: &f&l" + streak));
+        player.sendMessage(ColorUtil.color("&eâ” Killstreak cua ban: &f&l" + streak));
     }
 
     private void sendHelp(CommandSender sender) {

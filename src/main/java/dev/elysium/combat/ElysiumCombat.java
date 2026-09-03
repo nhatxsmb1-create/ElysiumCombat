@@ -19,6 +19,7 @@ public class ElysiumCombat extends JavaPlugin {
     private static ElysiumCombat instance;
     private CombatConfig       combatConfig;
     private ClassManager       classManager;
+    private dev.elysium.combat.clazz.LifeClassManager lifeClassManager;
     private SkillManager       skillManager;
     private StatsManager       statsManager;
     private ManaManager        manaManager;
@@ -39,6 +40,7 @@ public class ElysiumCombat extends JavaPlugin {
 
         combatConfig       = new CombatConfig(this);
         classManager       = new ClassManager(this);
+        lifeClassManager   = new dev.elysium.combat.clazz.LifeClassManager(this);
         skillManager       = new SkillManager(this);
         statsManager       = new StatsManager(this);
         manaManager        = new ManaManager(this);
@@ -73,7 +75,7 @@ public class ElysiumCombat extends JavaPlugin {
         getLogger().info("ElysiumCombat disabled.");
     }
 
-    // ── Reload ───────────────────────────────────────────────────────────────
+    // â”€â”€ Reload â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     public void reload() {
         combatConfig.reload();
@@ -90,7 +92,7 @@ public class ElysiumCombat extends JavaPlugin {
         getLogger().info("[ElysiumCombat] Reloaded.");
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────────
+    // â”€â”€ Getters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     public static ElysiumCombat getInstance()        { return instance; }
     public CombatConfig       getCombatConfig()      { return combatConfig; }

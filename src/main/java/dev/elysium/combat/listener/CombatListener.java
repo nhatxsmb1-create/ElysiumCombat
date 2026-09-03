@@ -17,7 +17,7 @@ public class CombatListener implements Listener {
 
     public CombatListener(ElysiumCombat plugin) { this.plugin = plugin; }
 
-    // ── Join / Quit ───────────────────────────────────────────────────────────
+    // â”€â”€ Join / Quit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -38,7 +38,7 @@ public class CombatListener implements Listener {
         plugin.getKillNotifyManager().cleanup(p.getUniqueId());
     }
 
-    // ── Damage: Defense + Combo + Hit Particle + Combat Tag ──────────────────
+    // â”€â”€ Damage: Defense + Combo + Hit Particle + Combat Tag â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent e) {
@@ -51,7 +51,7 @@ public class CombatListener implements Listener {
             attacker = p;
         }
 
-        // ── Defense & Victim Passives ─────────────────────────────────────────
+        // â”€â”€ Defense & Victim Passives â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if (e.getEntity() instanceof Player victim) {
             CombatStats stats = plugin.getStatsManager().getStats(victim);
             if (stats.getDefense() > 0) {
@@ -61,7 +61,7 @@ public class CombatListener implements Listener {
             // Victim Passives
             plugin.getPassiveManager().processVictimPassives(victim, e.getDamage());
 
-            // Combat Tag: victim bi danh → tag ca hai
+            // Combat Tag: victim bi danh â†’ tag ca hai
             if (attacker != null) {
                 plugin.getCombatTagManager().tag(attacker, victim);
             }
@@ -70,12 +70,19 @@ public class CombatListener implements Listener {
             plugin.getComboManager().resetCombo(victim.getUniqueId());
         }
 
-        // ── Attacker Passives, Combo, Hit Particle, Tag ─────────────────────
+        // â”€â”€ Attacker Passives, Combo, Hit Particle, Tag â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if (attacker != null && e.getEntity() instanceof LivingEntity target) {
             boolean isArrow = e.getDamager() instanceof Projectile;
             
             // Attacker Passives
             double passiveMultiplier = plugin.getPassiveManager().processAttackerPassives(attacker, target, isArrow);
+            
+            dev.elysium.combat.clazz.LifeClass lifeClass = plugin.getLifeClassManager().getLifeClass(attacker);
+            if (lifeClass == dev.elysium.combat.clazz.LifeClass.STRIKER) {
+                e.setDamage(e.getDamage() * 1.5);
+            } else if (lifeClass == dev.elysium.combat.clazz.LifeClass.FORGER) {
+                e.setDamage(e.getDamage() * 0.5);
+            }
             if (passiveMultiplier != 1.0) {
                 e.setDamage(e.getDamage() * passiveMultiplier);
             }
@@ -104,7 +111,7 @@ public class CombatListener implements Listener {
         plugin.getDamageIndicatorManager().spawnIndicator(e.getEntity().getLocation(), e.getDamage(), isCrit);
     }
 
-    // ── Death: Kill Notify + Streak + Particle ───────────────────────────────
+    // â”€â”€ Death: Kill Notify + Streak + Particle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
@@ -126,7 +133,7 @@ public class CombatListener implements Listener {
         }
     }
 
-    // ── Chan lenh khi dang combat tag ────────────────────────────────────────
+    // â”€â”€ Chan lenh khi dang combat tag â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onCommand(PlayerCommandPreprocessEvent e) {
@@ -136,10 +143,10 @@ public class CombatListener implements Listener {
 
         e.setCancelled(true);
         player.sendActionBar(ColorUtil.component(
-            "&c⚔ Dang chien dau! Khong the dung lenh nay!"));
+            "&câ” Dang chien dau! Khong the dung lenh nay!"));
     }
 
-    // ── Level Up ─────────────────────────────────────────────────────────────
+    // â”€â”€ Level Up â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @EventHandler
     public void onLevelUp(ElysiumLevelUpEvent e) {
