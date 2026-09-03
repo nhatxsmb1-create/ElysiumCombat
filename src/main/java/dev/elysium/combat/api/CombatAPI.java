@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CombatAPI {
     public static void init(ElysiumCombat plugin) {}
-    // GĂ¡Â»Âi tĂ¡Â»Â« hĂ¡Â»â€¡ thĂ¡Â»â€˜ng /trangbi cĂ¡Â»Â§a ElysiumItem khi LĂ¡ÂºÂ®P LÄ‚â€¢I
+    // GÄ‚Â¡Ă‚Â»Ă‚Âi tÄ‚Â¡Ă‚Â»Ă‚Â« hÄ‚Â¡Ă‚Â»Ă¢â‚¬Â¡ thÄ‚Â¡Ă‚Â»Ă¢â‚¬Ëœng /trangbi cÄ‚Â¡Ă‚Â»Ă‚Â§a ElysiumItem khi LÄ‚Â¡Ă‚ÂºĂ‚Â®P LĂ„â€Ă¢â‚¬Â¢I
     public static void equipCore(Player player, String coreName) {
         try {
             PlayerClass pc = PlayerClass.valueOf(coreName.toUpperCase());
@@ -28,7 +28,7 @@ public class CombatAPI {
         }
     }
 
-    // GĂ¡Â»Âi tĂ¡Â»Â« hĂ¡Â»â€¡ thĂ¡Â»â€˜ng /trangbi cĂ¡Â»Â§a ElysiumItem khi THÄ‚ÂO LÄ‚â€¢I
+    // GÄ‚Â¡Ă‚Â»Ă‚Âi tÄ‚Â¡Ă‚Â»Ă‚Â« hÄ‚Â¡Ă‚Â»Ă¢â‚¬Â¡ thÄ‚Â¡Ă‚Â»Ă¢â‚¬Ëœng /trangbi cÄ‚Â¡Ă‚Â»Ă‚Â§a ElysiumItem khi THĂ„â€Ă‚ÂO LĂ„â€Ă¢â‚¬Â¢I
     public static void unequipCore(Player player) {
         ElysiumCombat.getInstance().getClassManager().setPlayerClass(player.getUniqueId(), PlayerClass.NONE);
         ElysiumCombat.getInstance().getStatsManager().apply(player);
@@ -41,7 +41,7 @@ public class CombatAPI {
         }
     }
     
-    // HÄ‚Â m tĂ¡ÂºÂ¡o ra vĂ¡ÂºÂ­t phĂ¡ÂºÂ©m LÄ‚Âµi KĂ¡Â»Â¹ NĂ„Æ’ng vĂ¡ÂºÂ­t lÄ‚Â½
+    // HĂ„â€Ă‚Â m tÄ‚Â¡Ă‚ÂºĂ‚Â¡o ra vÄ‚Â¡Ă‚ÂºĂ‚Â­t phÄ‚Â¡Ă‚ÂºĂ‚Â©m LĂ„â€Ă‚Âµi KÄ‚Â¡Ă‚Â»Ă‚Â¹ NÄ‚â€Ă†â€™ng vÄ‚Â¡Ă‚ÂºĂ‚Â­t lĂ„â€Ă‚Â½
     public static ItemStack getCoreItem(String coreName) {
         try {
             PlayerClass pc = PlayerClass.valueOf(coreName.toUpperCase());
@@ -58,14 +58,14 @@ public class CombatAPI {
             List<String> lore = new ArrayList<>();
             lore.add(ColorUtil.color("&7" + cd.getDescription()));
             lore.add("");
-            lore.add(ColorUtil.color("&a&l[ CHĂ¡Â»Ë† SĂ¡Â»Â GIA TĂ„â€NG ]"));
-            lore.add(ColorUtil.color("&7* MÄ‚Â¡u: &c+" + cd.getBonusHp()));
-            lore.add(ColorUtil.color("&7* SÄ‚Â¡t ThĂ†Â°Ă†Â¡ng: &c+" + cd.getBonusDamage()));
-            lore.add(ColorUtil.color("&7* GiÄ‚Â¡p: &a+" + cd.getDefense()));
+            lore.add(ColorUtil.color("&a&l[ CHÄ‚Â¡Ă‚Â»Ă‹â€  SÄ‚Â¡Ă‚Â»Ă‚Â GIA TÄ‚â€Ă¢â‚¬ÂNG ]"));
+            lore.add(ColorUtil.color("&7* MĂ„â€Ă‚Â¡u: &c+" + cd.getBonusHp()));
+            lore.add(ColorUtil.color("&7* SĂ„â€Ă‚Â¡t ThÄ‚â€ Ă‚Â°Ä‚â€ Ă‚Â¡ng: &c+" + cd.getBonusDamage()));
+            lore.add(ColorUtil.color("&7* GiĂ„â€Ă‚Â¡p: &a+" + cd.getDefense()));
             lore.add("");
-            lore.add(ColorUtil.color("&e&l[ HĂ†Â¯Ă¡Â»ÂNG DĂ¡ÂºÂªN KÄ‚ÂCH HOĂ¡ÂºÂ T ]"));
-            lore.add(ColorUtil.color("&7DÄ‚Â¹ng lĂ¡Â»â€¡nh &f/trangbi &7vÄ‚Â  Ă„â€˜Ă¡ÂºÂ·t lÄ‚Âµi nÄ‚Â y"));
-            lore.add(ColorUtil.color("&7vÄ‚Â o Ä‚Â´ HĂ¡Â»â€¡ PhÄ‚Â¡i Ă„â€˜Ă¡Â»Æ’ nhĂ¡ÂºÂ­n KĂ¡Â»Â¹ NĂ„Æ’ng."));
+            lore.add(ColorUtil.color("&e&l[ HÄ‚â€ Ă‚Â¯Ä‚Â¡Ă‚Â»Ă‚ÂNG DÄ‚Â¡Ă‚ÂºĂ‚ÂªN KĂ„â€Ă‚ÂCH HOÄ‚Â¡Ă‚ÂºĂ‚Â T ]"));
+            lore.add(ColorUtil.color("&7DĂ„â€Ă‚Â¹ng lÄ‚Â¡Ă‚Â»Ă¢â‚¬Â¡nh &f/trangbi &7vĂ„â€Ă‚Â  Ä‚â€Ă¢â‚¬ËœÄ‚Â¡Ă‚ÂºĂ‚Â·t lĂ„â€Ă‚Âµi nĂ„â€Ă‚Â y"));
+            lore.add(ColorUtil.color("&7vĂ„â€Ă‚Â o Ă„â€Ă‚Â´ HÄ‚Â¡Ă‚Â»Ă¢â‚¬Â¡ PhĂ„â€Ă‚Â¡i Ä‚â€Ă¢â‚¬ËœÄ‚Â¡Ă‚Â»Ă†â€™ nhÄ‚Â¡Ă‚ÂºĂ‚Â­n KÄ‚Â¡Ă‚Â»Ă‚Â¹ NÄ‚â€Ă†â€™ng."));
             
             meta.setLore(lore);
             

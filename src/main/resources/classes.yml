@@ -1,12 +1,12 @@
 classes:
   WARRIOR:
-    display-name: "&c&lâ” Chiáº¿n Binh"
-    description: "Báº­c tháº§y cáº­n chiáº¿n, chá»‘ng chá»‹u tá»‘t vĂ  sinh tá»“n máº¡nh máº½."
+    display-name: "&c&lĂ¢Ââ€ ChiĂ¡ÂºÂ¿n Binh"
+    description: "BĂ¡ÂºÂ­c thĂ¡ÂºÂ§y cĂ¡ÂºÂ­n chiĂ¡ÂºÂ¿n, chĂ¡Â»â€˜ng chĂ¡Â»â€¹u tĂ¡Â»â€˜t vÄ‚Â  sinh tĂ¡Â»â€œn mĂ¡ÂºÂ¡nh mĂ¡ÂºÂ½."
     item: NETHERITE_SWORD
     optimized-weapons:
-      - "&fÄáº¡i Kiáº¿m"
-      - "&fHoa Kiáº¿m"
-      - "&fÄáº¡i Phá»§"
+      - "&fĂ„ÂĂ¡ÂºÂ¡i KiĂ¡ÂºÂ¿m"
+      - "&fHoa KiĂ¡ÂºÂ¿m"
+      - "&fĂ„ÂĂ¡ÂºÂ¡i PhĂ¡Â»Â§"
     stats:
       bonus-hp: 20.0
       bonus-damage: 2.0
@@ -16,13 +16,13 @@ classes:
       max-mana-bonus: -20
 
   MAGE:
-    display-name: "&9&lâœ¦ PhĂ¡p SÆ°"
-    description: "Äiá»u khiá»ƒn nÄƒng lÆ°á»£ng vĂ´ táº­n, tung Ä‘Ă²n phĂ©p thuáº­t diá»‡n rá»™ng."
+    display-name: "&9&lĂ¢Å“Â¦ PhÄ‚Â¡p SĂ†Â°"
+    description: "Ă„ÂiĂ¡Â»Âu khiĂ¡Â»Æ’n nĂ„Æ’ng lĂ†Â°Ă¡Â»Â£ng vÄ‚Â´ tĂ¡ÂºÂ­n, tung Ă„â€˜Ä‚Â²n phÄ‚Â©p thuĂ¡ÂºÂ­t diĂ¡Â»â€¡n rĂ¡Â»â„¢ng."
     item: END_CRYSTAL
     optimized-weapons:
-      - "&fTrÆ°á»£ng PhĂ©p"
-      - "&fOrb NÄƒng LÆ°á»£ng"
-      - "&fSĂ¡ch Ma Thuáº­t"
+      - "&fTrĂ†Â°Ă¡Â»Â£ng PhÄ‚Â©p"
+      - "&fOrb NĂ„Æ’ng LĂ†Â°Ă¡Â»Â£ng"
+      - "&fSÄ‚Â¡ch Ma ThuĂ¡ÂºÂ­t"
     stats:
       bonus-hp: -6.0
       bonus-damage: 1.0
@@ -32,13 +32,13 @@ classes:
       max-mana-bonus: 150
 
   RANGER:
-    display-name: "&a&lđŸ¹ Xáº¡ Thá»§"
-    description: "ChuyĂªn gia Ä‘Ă¡nh xa, cÆ¡ Ä‘á»™ng vĂ  chĂ­nh xĂ¡c tuyá»‡t Ä‘á»‘i."
+    display-name: "&a&lÄ‘Å¸ÂÂ¹ XĂ¡ÂºÂ¡ ThĂ¡Â»Â§"
+    description: "ChuyÄ‚Âªn gia Ă„â€˜Ä‚Â¡nh xa, cĂ†Â¡ Ă„â€˜Ă¡Â»â„¢ng vÄ‚Â  chÄ‚Â­nh xÄ‚Â¡c tuyĂ¡Â»â€¡t Ă„â€˜Ă¡Â»â€˜i."
     item: BOW
     optimized-weapons:
-      - "&fCung DĂ i"
-      - "&fNá» LiĂªn ChĂ¢u"
-      - "&fSong SĂºng"
+      - "&fCung DÄ‚Â i"
+      - "&fNĂ¡Â»Â LiÄ‚Âªn ChÄ‚Â¢u"
+      - "&fSong SÄ‚Âºng"
     stats:
       bonus-hp: -2.0
       bonus-damage: 3.0
@@ -48,12 +48,12 @@ classes:
       max-mana-bonus: 20
 
   ASSASSIN:
-    display-name: "&5&lđŸ—¡ ThĂ­ch KhĂ¡ch"
-    description: "áº¨n mĂ¬nh trong bĂ³ng tá»‘i, má»™t Ä‘Ă²n chĂ­ máº¡ng káº¿t liá»…u káº» thĂ¹."
+    display-name: "&5&lÄ‘Å¸â€”Â¡ ThÄ‚Â­ch KhÄ‚Â¡ch"
+    description: "Ă¡ÂºÂ¨n mÄ‚Â¬nh trong bÄ‚Â³ng tĂ¡Â»â€˜i, mĂ¡Â»â„¢t Ă„â€˜Ä‚Â²n chÄ‚Â­ mĂ¡ÂºÂ¡ng kĂ¡ÂºÂ¿t liĂ¡Â»â€¦u kĂ¡ÂºÂ» thÄ‚Â¹."
     item: PHANTOM_MEMBRANE
     optimized-weapons:
-      - "&fDao GÄƒm"
-      - "&fSong Kiáº¿m"
+      - "&fDao GĂ„Æ’m"
+      - "&fSong KiĂ¡ÂºÂ¿m"
       - "&fKatana"
     stats:
       bonus-hp: -8.0
@@ -64,13 +64,13 @@ classes:
       max-mana-bonus: 0
 
   SUPPORT:
-    display-name: "&e&lđŸ›¡ Há»— Trá»£"
-    description: "TrĂ¡i tim cá»§a Ä‘á»™i hĂ¬nh, cung cáº¥p buff vĂ  hiá»‡u á»©ng khá»‘ng cháº¿."
+    display-name: "&e&lÄ‘Å¸â€ºÂ¡ HĂ¡Â»â€” TrĂ¡Â»Â£"
+    description: "TrÄ‚Â¡i tim cĂ¡Â»Â§a Ă„â€˜Ă¡Â»â„¢i hÄ‚Â¬nh, cung cĂ¡ÂºÂ¥p buff vÄ‚Â  hiĂ¡Â»â€¡u Ă¡Â»Â©ng khĂ¡Â»â€˜ng chĂ¡ÂºÂ¿."
     item: TOTEM_OF_UNDYING
     optimized-weapons:
-      - "&fKhiĂªn ThĂ¡nh"
-      - "&fCá» Lá»‡nh"
-      - "&fNháº«n Há»— Trá»£"
+      - "&fKhiÄ‚Âªn ThÄ‚Â¡nh"
+      - "&fCĂ¡Â»Â LĂ¡Â»â€¡nh"
+      - "&fNhĂ¡ÂºÂ«n HĂ¡Â»â€” TrĂ¡Â»Â£"
     stats:
       bonus-hp: 10.0
       bonus-damage: -2.0

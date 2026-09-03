@@ -1,4 +1,4 @@
-﻿package dev.elysium.combat.gui;
+package dev.elysium.combat.gui;
 
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.LifeClass;
