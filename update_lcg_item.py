@@ -1,8 +1,13 @@
-package dev.elysium.combat.gui;
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+lcg = '''package dev.elysium.combat.gui;
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.LifeClass;
 import dev.elysium.core.util.ColorUtil;
-import dev.elysium.core.api.CoreAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,10 +72,7 @@ public class LifeClassGui implements Listener {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         } else {
             lore.add(ColorUtil.color("&e&l► &eNhấp để chuyển sang nghề này."));
-            double cost = plugin.getCombatConfig().getChangeClassCost();
-            if (cost > 0) {
-                lore.add(ColorUtil.color("&c&o(Yêu cầu: " + String.format("%,.0f", cost) + " Tinh Lực)"));
-            }
+            lore.add(ColorUtil.color("&c&o(Yêu cầu: 1x Huy Hiệu Chức Nghiệp)"));
         }
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setLore(lore);
@@ -97,19 +99,25 @@ public class LifeClassGui implements Listener {
         else if (e.getRawSlot() == 15) target = LifeClass.STRIKER;
         
         if (target != null && target != current) {
-            if (!plugin.getCombatConfig().isChangeClassEnabled()) {
-                p.sendMessage(ColorUtil.color("&cTính năng chuyển nghề đang bị khóa!"));
-                return;
-            }
-            
-            double cost = plugin.getCombatConfig().getChangeClassCost();
-            if (cost > 0) {
-                if (!CoreAPI.hasBalance(p, cost)) {
-                    p.sendMessage(ColorUtil.color("&cBạn không có đủ &e" + String.format("%,.0f", cost) + " Tinh Lực &cđể chuyển nghề!"));
+            ItemStack requireItem = plugin.getCombatConfig().getChangeClassItem();
+            if (requireItem != null) {
+                // Check if player has the item
+                boolean hasItem = false;
+                for (ItemStack i : p.getInventory().getContents()) {
+                    if (i != null && i.isSimilar(requireItem)) {
+                        if (i.getAmount() >= 1) {
+                            hasItem = true;
+                            i.setAmount(i.getAmount() - 1);
+                            break;
+                        }
+                    }
+                }
+                
+                if (!hasItem) {
+                    p.sendMessage(ColorUtil.color("&cBạn cần có &eHuy Hiệu Chức Nghiệp &cđể chuyển nghề!"));
                     p.closeInventory();
                     return;
                 }
-                CoreAPI.removeBalance(p, cost);
             }
             
             plugin.getLifeClassManager().setLifeClass(p, target);
@@ -119,3 +127,6 @@ public class LifeClassGui implements Listener {
         }
     }
 }
+'''
+write_file('src/main/java/dev/elysium/combat/gui/LifeClassGui.java', lcg)
+print("Updated LifeClassGui.java with item requirement")

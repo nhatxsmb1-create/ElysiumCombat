@@ -1,4 +1,10 @@
-package dev.elysium.combat.config;
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+cc = '''package dev.elysium.combat.config;
 
 import dev.elysium.combat.ElysiumCombat;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,3 +29,6 @@ public class CombatConfig {
     public double getChangeClassCost()             { return cfg.getDouble("class-change.cost", 50000.0); }
     public boolean isChangeClassEnabled()          { return cfg.getBoolean("class-change.enabled", true); }
 }
+'''
+write_file('src/main/java/dev/elysium/combat/config/CombatConfig.java', cc)
+print("Updated CombatConfig.java")

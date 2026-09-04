@@ -2,10 +2,7 @@
 prefix: "&c[Combat] &r"
 
 skill-item:
-  # Material cua skill item tren hotbar
-  # Resource pack se doi texture theo CustomModelData
   material: NETHER_STAR
-  # Hotbar slot (0-8). Mac dinh: slot 7, 8, 9 (index 6, 7, 8)
   slot-1: 6
   slot-2: 7
   slot-3: 8
@@ -14,16 +11,8 @@ mana:
   display-interval: 20
   regen-interval: 40
 
-# Cap nhat cooldown lore moi bao nhieu tick
 cooldown-update-interval: 20
+
 class-change:
   enabled: true
-  item:
-    material: NETHER_STAR
-    amount: 1
-    name: "&6&l✦ Huy Hiệu Chức Nghiệp"
-    lore:
-      - "&7Vật phẩm đặc biệt dùng để thay đổi"
-      - "&7con đường sức mạnh của bạn."
-      - ""
-      - "&e&oThu thập từ các Boss hoặc Sự Kiện."
+  cost: 50000.0
