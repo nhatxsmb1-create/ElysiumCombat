@@ -1,4 +1,10 @@
-package dev.elysium.combat.gui;
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+acg = '''package dev.elysium.combat.gui;
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.api.CombatAPI;
 import dev.elysium.combat.clazz.ClassData;
@@ -66,3 +72,6 @@ public class AdminCoreGui implements Listener {
         }
     }
 }
+'''
+write_file('src/main/java/dev/elysium/combat/gui/AdminCoreGui.java', acg)
+print("Fixed AdminCoreGui.java")

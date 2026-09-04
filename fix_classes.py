@@ -1,4 +1,10 @@
-classes:
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+cyml = '''classes:
   WARRIOR:
     display-name: "&c&l⚔ Lõi Cuồng Chiến"
     description: "Hạch tâm chứa sức mạnh của Bậc thầy cận chiến, chống chịu tốt và sinh tồn mạnh mẽ."
@@ -78,3 +84,6 @@ classes:
       speed-modifier: 0.01
       mana-regen: 10
       max-mana-bonus: 50
+'''
+write_file('src/main/resources/classes.yml', cyml)
+print("Fixed classes.yml")
