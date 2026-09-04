@@ -1,4 +1,10 @@
-package dev.elysium.combat.gui;
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+awg = '''package dev.elysium.combat.gui;
 
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.PlayerClass;
@@ -87,3 +93,6 @@ public class AwakenGui extends ElysiumGui {
         }
     }
 }
+'''
+write_file('src/main/java/dev/elysium/combat/gui/AwakenGui.java', awg)
+print("Updated AwakenGui.java")
