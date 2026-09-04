@@ -26,10 +26,10 @@ public class CombatCommand implements CommandExecutor {
                 plugin.saveResource("classes.yml", true);
                 plugin.saveResource("config.yml", true);
                 plugin.saveResource("skills.yml", true);
-                sender.sendMessage(ColorUtil.color("&e[Há»‡ Thá»‘ng] ÄĂ£ Ä‘á»“ng bá»™ & cáº­p nháº­t toĂ n bá»™ file YML tá»« lĂµi Source!"));
+                sender.sendMessage(ColorUtil.color("&e[HĂ¡Â»â€¡ ThĂ¡Â»â€˜ng] Ă„ÂÄ‚Â£ Ă„â€˜Ă¡Â»â€œng bĂ¡Â»â„¢ & cĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t toÄ‚Â n bĂ¡Â»â„¢ file YML tĂ¡Â»Â« lÄ‚Âµi Source!"));
             } catch (Exception ex) {}
             plugin.reload();
-            sender.sendMessage(ColorUtil.color("&a[ElysiumCombat] ÄĂ£ reload thĂ nh cĂ´ng!"));
+            sender.sendMessage(ColorUtil.color("&a[ElysiumCombat] Ă„ÂÄ‚Â£ reload thÄ‚Â nh cÄ‚Â´ng!"));
             return true;
         }
 
@@ -55,6 +55,7 @@ public class CombatCommand implements CommandExecutor {
                 if (sender instanceof Player p) handleStreak(p);
             }
             case "giveitem", "classitem"   -> handleGiveItem(sender, args);
+            case "admin"                 -> handleAdmin(sender);
             default                        -> sendHelp(sender);
         }
         return true;
@@ -102,7 +103,7 @@ public class CombatCommand implements CommandExecutor {
         ClassData cd = pc != null ? plugin.getClassManager().getClassData(pc) : null;
 
         player.sendMessage(ColorUtil.color("&c=== Combat Info ==="));
-        player.sendMessage(ColorUtil.color("  &7Class: " + (cd != null ? cd.getDisplayName() : "&cChua chon â€” /combat")));
+        player.sendMessage(ColorUtil.color("  &7Class: " + (cd != null ? cd.getDisplayName() : "&cChua chon Ă¢â‚¬â€ /combat")));
         if (ep != null) {
             player.sendMessage(ColorUtil.color("  &7Mana: &b" + ep.getMana() + "/" + ep.getMaxMana()));
             player.sendMessage(ColorUtil.color("  &7Level: &e" + ep.getLevel()));
@@ -115,12 +116,22 @@ public class CombatCommand implements CommandExecutor {
         int combo  = plugin.getComboManager().getCombo(player.getUniqueId());
         player.sendMessage(ColorUtil.color("  &7Killstreak: &e" + streak));
         player.sendMessage(ColorUtil.color("  &7Combo hien tai: &f" + combo + "x"));
-        player.sendMessage(ColorUtil.color("  &8/combat â€” mo menu chon class"));
+        player.sendMessage(ColorUtil.color("  &8/combat Ă¢â‚¬â€ mo menu chon class"));
     }
 
     private void handleStreak(Player player) {
         int streak = plugin.getKillNotifyManager().getKillstreak(player.getUniqueId());
-        player.sendMessage(ColorUtil.color("&eâ” Killstreak cua ban: &f&l" + streak));
+        player.sendMessage(ColorUtil.color("&eĂ¢Ââ€ Killstreak cua ban: &f&l" + streak));
+    }
+
+    private void handleAdmin(CommandSender sender) {
+        if (!sender.hasPermission("elysium.combat.admin")) {
+            sender.sendMessage(ColorUtil.color("&cKhong co quyen!"));
+            return;
+        }
+        if (sender instanceof Player p) {
+            new dev.elysium.combat.gui.AdminCoreGui(plugin).open(p);
+        }
     }
 
     private void sendHelp(CommandSender sender) {
@@ -131,6 +142,7 @@ public class CombatCommand implements CommandExecutor {
         if (sender.hasPermission("elysium.combat.admin")) {
             sender.sendMessage(ColorUtil.color("  &7/combat giveitem <player> [amount] &f- Phat Huy Hieu Chuc Nghiep"));
             sender.sendMessage(ColorUtil.color("  &7/combat reload &f- Reload config"));
+            sender.sendMessage(ColorUtil.color("  &7/combat admin &f- Mo kho Loi he phai"));
         }
     }
 }
