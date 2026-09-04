@@ -1,4 +1,10 @@
-package dev.elysium.combat;
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+ccmd = '''package dev.elysium.combat;
 
 import dev.elysium.combat.clazz.ClassData;
 import dev.elysium.combat.clazz.PlayerClass;
@@ -104,3 +110,6 @@ public class CombatCommand implements CommandExecutor {
         }
     }
 }
+'''
+write_file('src/main/java/dev/elysium/combat/CombatCommand.java', ccmd)
+print("Updated CombatCommand.java")
