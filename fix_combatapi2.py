@@ -1,4 +1,10 @@
-package dev.elysium.combat.api;
+﻿import os
+
+def write_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+combat_api = '''package dev.elysium.combat.api;
 
 import dev.elysium.combat.ElysiumCombat;
 import dev.elysium.combat.clazz.ClassData;
@@ -81,3 +87,6 @@ public class CombatAPI {
         }
     }
 }
+'''
+write_file('src/main/java/dev/elysium/combat/api/CombatAPI.java', combat_api)
+print("Fixed CombatAPI.java lore")
